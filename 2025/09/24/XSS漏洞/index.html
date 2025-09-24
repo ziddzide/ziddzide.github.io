@@ -27,7 +27,7 @@
 <meta property="og:description" content="XSS漏洞漏洞类型反射型&#x2F;存储型XSS 反射型XSS：恶意代码未被服务器存储，利用get&#x2F;post方式提交恶意代码，一次性触发  存储型XSS：恶意代码被服务器存储，访问页面时触发   DOM型XSS页面中JavaScript代码执行后被注入了污染的变量 利用方式1.XSS标签所有标签基本上都可以使用on事件触发恶意代码 12&lt;h1 onmousemove&#x3D;&quot;a">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-24T12:10:55.000Z">
-<meta property="article:modified_time" content="2025-09-24T12:16:07.453Z">
+<meta property="article:modified_time" content="2025-09-24T12:20:30.752Z">
 <meta property="article:author" content="ziddzide">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          514 字
+          505 字
         
       </span>
     
@@ -285,9 +285,6 @@
 <h2 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h2><h3 id="1-XSS标签"><a href="#1-XSS标签" class="headerlink" title="1.XSS标签"></a>1.XSS标签</h3><p>所有标签基本上都可以使用on事件触发恶意代码</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">onmousemove</span>=<span class="hljs-string">&quot;alert(&quot;</span><span class="hljs-attr">moved</span>&quot;)&quot;&gt;</span>this is a title<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">x</span> <span class="hljs-attr">onerror</span>=<span class="hljs-string">&quot;alert(&#x27;error&#x27;)&quot;</span>/&gt;</span> # 不存在x的图片报错<br></code></pre></td></tr></table></figure>
 
-<h1 onmousemove="alert("moved")">this is a title</h1>
-<img src=x onerror="alert('error')"/> # 不存在x的图片报错
-
 <p><strong>有一种最基础的标签,是XSS的象征</strong>:</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"><span class="hljs-title function_">alert</span>(<span class="hljs-string">&#x27;error&#x27;</span>)</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
@@ -296,8 +293,6 @@
 
 <p><a href="javascript:alert(1)">click</a></p>
 <h3 id="2-HTML5特性的XSS"><a href="#2-HTML5特性的XSS" class="headerlink" title="2.HTML5特性的XSS"></a>2.HTML5特性的XSS</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">onfocus</span>=<span class="hljs-string">write(1)</span> <span class="hljs-attr">autofocus</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-<input onfocus=write(1) autofocus>
 
 <p>利用javascript行内式编写：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html">onclick=&#x27;alert(document.cooike)<br></code></pre></td></tr></table></figure>

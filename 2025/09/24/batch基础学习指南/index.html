@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ziddzide">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="批处理命令文件的编写和利用引言我在启动三角洲行动时遇见了cpu虚拟化相关报错，有进程或是应用占用了虚拟化，我之前一直使用的是VMware，随用随关，但是我将虚拟机搭载到windows支持的wsl2后由于使用了Hper-V服务占用了虚拟化导致三角洲行动不断报错，查看ace网页后要关闭Hper-V服务重启后才可以进入，但是我觉得相当繁琐，要关闭服务还要关闭内核隔离中的内存完整性，因此想要制作批处理脚本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="batch基础学习指南">
+<meta property="og:url" content="http://example.com/2025/09/24/batch%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="ziddzide的技术博客">
+<meta property="og:description" content="批处理命令文件的编写和利用引言我在启动三角洲行动时遇见了cpu虚拟化相关报错，有进程或是应用占用了虚拟化，我之前一直使用的是VMware，随用随关，但是我将虚拟机搭载到windows支持的wsl2后由于使用了Hper-V服务占用了虚拟化导致三角洲行动不断报错，查看ace网页后要关闭Hper-V服务重启后才可以进入，但是我觉得相当繁琐，要关闭服务还要关闭内核隔离中的内存完整性，因此想要制作批处理脚本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-24T07:20:39.000Z">
+<meta property="article:modified_time" content="2025-09-24T07:21:25.986Z">
+<meta property="article:author" content="ziddzide">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>batch基础学习指南 - ziddzide的技术博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ziddzide</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="batch基础学习指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-24 15:20" pubdate>
+          2025年9月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">batch基础学习指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="批处理命令文件的编写和利用"><a href="#批处理命令文件的编写和利用" class="headerlink" title="批处理命令文件的编写和利用"></a>批处理命令文件的编写和利用</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>我在启动三角洲行动时遇见了cpu虚拟化相关报错，有进程或是应用占用了虚拟化，我之前一直使用的是VMware，随用随关，但是我将虚拟机搭载到windows支持的wsl2后由于使用了Hper-V服务占用了虚拟化导致三角洲行动不断报错，查看ace网页后要关闭Hper-V服务重启后才可以进入，但是我觉得相当繁琐，要关闭服务还要关闭内核隔离中的内存完整性，因此想要制作批处理脚本自动化执行命令，简化我之后的重复劳动。既然如此，那就做一篇有关于bat的markdown文件记录，顺手作为教程。</p>
+<h2 id="bat基本语法命令"><a href="#bat基本语法命令" class="headerlink" title="bat基本语法命令"></a>bat基本语法命令</h2><h3 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h3><h4 id="注释符"><a href="#注释符" class="headerlink" title="注释符"></a>注释符</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">:: 这一行都是注释<br>REM 这一行也都是注释<br></code></pre></td></tr></table></figure>
+
+<h4 id="回显"><a href="#回显" class="headerlink" title="回显"></a>回显</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs batch">echo &quot;hello world&quot;<br>::命令行界面输出hello world<br>@echo [on|off]<br>::打开|关闭回显<br>chcp 65001<br>::修改文档编码为utf-8,用于防止回显乱码<br>echo %str%<br>::输出字符串变量str的值<br></code></pre></td></tr></table></figure>
+
+<h4 id="暂停"><a href="#暂停" class="headerlink" title="暂停"></a>暂停</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">pause<br>::输出&quot;请按任意键继续&quot;<br></code></pre></td></tr></table></figure>
+
+<h4 id="设置变量"><a href="#设置变量" class="headerlink" title="设置变量"></a>设置变量</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs batch">set /a n=0<br>REM 设置数字变量n=0<br>set str=&quot;hello&quot;<br>REM 设置字符串变量<br>set arr=1 2 3 4 5<br>::设置数组变量<br></code></pre></td></tr></table></figure>
+
+<h4 id="字符串操作"><a href="#字符串操作" class="headerlink" title="字符串操作"></a>字符串操作</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs batch">set res=%str1% %str2%<br>REM 连接字符串<br>set str=%str1:~0,3%<br>::字符串截取,从第0位开始截取三个字符<br>echo %str:~3,5%<br>::输出第三位开始共五个字符,用于查找<br>%str:abc=xyz%<br>::用于将字符串中abc替换为xyz<br></code></pre></td></tr></table></figure>
+
+<h4 id="获取程序返回码"><a href="#获取程序返回码" class="headerlink" title="获取程序返回码"></a>获取程序返回码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">echo %errorlevel%<br>::判断上一条命令是否成功,默认情况输出0<br></code></pre></td></tr></table></figure>
+
+<h4 id="更改CMD标题-以及背景颜色"><a href="#更改CMD标题-以及背景颜色" class="headerlink" title="更改CMD标题,以及背景颜色"></a>更改CMD标题,以及背景颜色</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs batch">title &quot;三角洲行动bat文件&quot;<br>color 02<br>::作用不大,不做介绍<br></code></pre></td></tr></table></figure>
+
+<h3 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h3><h4 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs batch">if [not] 条件 命令<br>::当条件为真[假]时执行命令<br>equ &quot;=&quot;<br>neq &quot;!=&quot;<br>lss &quot;&lt;&quot;<br>leq &quot;&lt;=&quot;<br>gtr &quot;&gt;&quot;<br>geq &quot;&gt;=&quot;<br></code></pre></td></tr></table></figure>
+
+<h4 id="标签跳跃"><a href="#标签跳跃" class="headerlink" title="标签跳跃"></a>标签跳跃</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs batch">:标签名<br>......<br>if %var% leq 3 GOTO start<br>::当var&lt;=3时执行标签符goto,跳转到start的地方向下继续执行<br></code></pre></td></tr></table></figure>
+
+<h4 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs batch">for的作用：在Bat脚本中用于执行循环和遍历操作。它可以遍历文件、文件夹、字符串列表等，并对每个元素执行一组命令。语法如下：<br>for %parameter in (set) do command<br><br>补充说明：<br>%%parameter是一个可以替代的循环变量，可以使用任意名称，在bat的for中使用。<br><br>%parameter这个关键字不能在bat中使用，只能在CMD命令下的for中使用。<br><br>in和do之间括号不能省略，之间的(set) 表示指定要遍历的元素集合的表达式，其可以是文件名、文件夹路径、字符串列表或一些其他的表达式，<br><br>变量可以是一个，也可以是多个，每一个字符串或变量，我们称之为一个元素，每个元素之间，用空格键、跳格键、逗号、分号或等号分隔；<br><br>for /f <br>::遍历指定目录下所有的文件和文件夹<br>for /d <br>::遍历指定目录下所有的文件夹<br>for /r <br>::遍历指定目录下所有的文件和子文件夹中的文件<br><br>::遍历文件夹中的文件<br>for %%f in (D:\path\to\folder\*) do (<br>    echo %%f<br>    REM 在此处执行其他命令<br>)<br>::* 是要遍历的文件夹路径和通配符，%%f 是循环变量<br><br>::遍历文件内容行<br>for /F &quot;delims=&quot; %%l in (file.txt) do (<br>    echo %%l<br>    REM 在此处执行其他命令<br>)<br>::(file.txt) 是要遍历的文件，%%l 是循环变量，遍历文件的每一行，并在每次循环中执行一组命令。<br>::/F选项指示 For 命令读取文件内容而不是文件名。<br><br>::遍历字符串列表<br>for %%s in (apple orange banana) do (<br>echo %%s<br>REM 在此处执行其他命令 )<br>::apple orange banana是要遍历的字符串列表，%%s是循环变量，遍历列表中的每个元素<br>此元素引用自csdn<br></code></pre></td></tr></table></figure>
+
+<h3 id="处理命令"><a href="#处理命令" class="headerlink" title="处理命令"></a>处理命令</h3><h4 id="调用外部程序"><a href="#调用外部程序" class="headerlink" title="调用外部程序"></a>调用外部程序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs batch">start 程序 [参数]<br>/D<br>::指定起始目录<br>/MIN[MAX]<br>::最小化[最大化]启动窗口<br>/WAIT<br>::程序结束后再执行脚本<br>/B<br>::在同一窗口执行程序<br>/b<br>::隐藏控制台执行程序<br></code></pre></td></tr></table></figure>
+
+<h4 id="调用其他batch文件"><a href="#调用其他batch文件" class="headerlink" title="调用其他batch文件"></a>调用其他batch文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs batch">call batch文件<br><br>---<br>call script.bat<br></code></pre></td></tr></table></figure>
+
+<h4 id="文本文件显示"><a href="#文本文件显示" class="headerlink" title="文本文件显示"></a>文本文件显示</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs batch">type text.txt<br>---<br>type 文件名 | find &quot;关键字&quot;<br>::查找文件中的关键字<br></code></pre></td></tr></table></figure>
+
+<h4 id="变量延迟赋值"><a href="#变量延迟赋值" class="headerlink" title="变量延迟赋值"></a>变量延迟赋值</h4><p>这个其实可以不用知道,唯一要确定的就是命令要单独一行,不要一行中出现两条命令</p>
+<h3 id="特殊符号命令"><a href="#特殊符号命令" class="headerlink" title="特殊符号命令"></a>特殊符号命令</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">@<br>::关闭当前行的回显<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs batch">&gt;<br>---<br>echo hello&gt;test.txt<br>::将test文件的内容替换为hello<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs batch">&gt;&gt;<br>::在文件末尾追加字符串<br>---<br>echo hello&gt;&gt;test.txt<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs batch">^<br>---<br>::转义字符,但只用于&lt; &gt; 回车符<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">&amp;&amp;<br>::命令连接符,不论前面的命令有没有出错都执行下一个指令<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">&amp;<br>::失败就不向后执行了<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs batch">||<br>::成功就不执行了<br></code></pre></td></tr></table></figure>
+
+<h2 id="更高的阶梯"><a href="#更高的阶梯" class="headerlink" title="更高的阶梯"></a>更高的阶梯</h2><h3 id="检测管理员权限"><a href="#检测管理员权限" class="headerlink" title="检测管理员权限"></a>检测管理员权限</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs batch">:: 方法1：NET SESSION检测法（推荐）<br>net session &gt;nul 2&gt;&amp;1<br>if %errorLevel% neq 0 (<br>    echo 请右键以管理员身份运行！<br>    timeout /t 3<br>    exit <br>)<br><br>:: 方法2：FLTMC检测法<br>fltmc &gt;nul 2&gt;&amp;1 || (<br>    echo 需要管理员权限！<br>    pause<br>    exit<br>)<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><p>首先,<code>net session</code>是只有管理员权限才可以进行的操作,网络会话查看</p>
+</li>
+<li><p><code>&gt;</code>重定向符,把net session的标准输出stdout定向到一个空设备,意味着丢弃</p>
+</li>
+<li><p>1表示标准输出,2表示错误输出,这是把错误输出定向到标准输出里,但是标准输出被定向到空设备丢弃,所以错误输出也会被丢弃.</p>
+</li>
+<li><p>之所以很复杂是因为,net session如果执行失败,它不会有标准输出,会有报错,也就是错误输出,此时按照原理丢弃</p>
+</li>
+<li><p>如果执行成功,会输出标准输,没有错误输出,会被丢弃,这会是一种没有任何输出的安静的检验管理员权限的办法</p>
+</li>
+<li><p>%errorlevel%捕获了上行的返回码,用于逻辑判断</p>
+</li>
+</ol>
+<h3 id="更深的路"><a href="#更深的路" class="headerlink" title="更深的路"></a>更深的路</h3><p>    基本的操作和检测管理员权限已经讲清，剩余的是有关于dism高级命令等一系列命令脚本，会慢更新。</p>
+<h4 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h4><p>在我使用deepseek创建脚本时出现报错,batch作为Windows的胶水语言随版本更新总会出现一些意想不到的结果,但这并不是batch的错,所以出现兼容性问题时先查看命令或者特性有没有被新版本删除</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><code class="hljs batch">@echo off<br>setlocal enabledelayedexpansion<br><br>:: ===== 修复：移除有问题的Unicode检测代码 =====<br>:: 只保留必要的编码设置<br>chcp 65001 &gt;nul<br>title Batch 脚本教学工具 - 修复版<br><br>:: ===== 添加暂停以确保窗口保持打开 =====<br>echo 正在初始化...<br>timeout /t 1 &gt;nul<br><br>:: ===== 简化的主菜单 =====<br>:MENU<br>cls<br>echo.<br>echo ================================<br>echo     Batch 脚本教学工具<br>echo ================================<br>echo [1] 显示系统信息<br>echo [2] 文件操作演示<br>echo [3] 网络测试<br>echo [4] 退出<br>echo ================================<br><br>:: 使用更稳定的选择方式<br>set /p choice=请选择功能 (1-4): <br><br>if &quot;%choice%&quot;==&quot;1&quot; goto INFO<br>if &quot;%choice%&quot;==&quot;2&quot; goto FILES<br>if &quot;%choice%&quot;==&quot;3&quot; goto NETWORK<br>if &quot;%choice%&quot;==&quot;4&quot; exit<br><br>echo 输入无效，请重新选择<br>pause<br>goto MENU<br><br>:INFO<br>cls<br>echo.<br>echo ===== 系统信息 =====<br>echo.<br><br>:: 使用更兼容的命令获取系统信息<br>echo 操作系统信息:<br>systeminfo | findstr /B /C:&quot;OS 名称&quot; /C:&quot;OS 版本&quot; /C:&quot;系统类型&quot;<br>echo.<br><br>echo 计算机名称: %COMPUTERNAME%<br>echo 用户名: %USERNAME%<br>echo.<br><br>echo 磁盘空间信息:<br>for /f &quot;skip=1&quot; %%d in (&#x27;wmic logicaldisk get caption,size,freespace&#x27;) do (<br>    if not &quot;%%d&quot;==&quot;&quot; echo 驱动器 %%d<br>)<br>echo.<br><br>pause<br>goto MENU<br><br>:FILES<br>cls<br>echo.<br>echo ===== 文件操作演示 =====<br>echo.<br><br>:: 显示当前目录文件<br>echo 当前目录文件列表:<br>dir /B<br>echo.<br><br>:: 创建示例文件进行演示<br>echo 正在创建示例文件...<br>echo 这是示例文件1 &gt; sample1.txt<br>echo 这是示例文件2 &gt; sample2.txt<br>echo 这是示例文件3 &gt; sample3.txt<br><br>echo 创建完成！新文件列表:<br>dir /B *.txt<br>echo.<br><br>:: 批量重命名演示<br>set /a count=0<br>for %%f in (*.txt) do (<br>    set /a count+=1<br>    ren &quot;%%f&quot; &quot;renamed_file_!count!.txt&quot;<br>)<br><br>echo 重命名后文件列表:<br>dir /B *.txt<br>echo.<br><br>:: 清理示例文件<br>del *_file_*.txt<br>echo 已清理示例文件<br>pause<br>goto MENU<br><br>:NETWORK<br>cls<br>echo.<br>echo ===== 网络测试 =====<br>echo.<br><br>echo 网络适配器信息:<br>ipconfig | findstr IPv4<br>echo.<br><br>set /p host=请输入要测试的网址或IP(直接回车使用百度): <br><br><br><br>if &quot;%host%&quot;==&quot;&quot; set host=www.baidu.com<br><br>echo 正在ping测试...<br>ping -n 3 %host%<br><br>echo.<br>echo 网络测试完成<br>pause<br>goto MENU<br></code></pre></td></tr></table></figure>
+
+
+
+<p>结果报错</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs batch">&#x27;wmic&#x27; is not recognized as an internal or external command,<br>operable program or batch file<br><br><br></code></pre></td></tr></table></figure>
+
+
+
+<p>遇到的问题是因为在 Windows 11 22H2 及更高版本中，微软已弃用并移除了 WMIC 工具。让我提供一个完全兼容的修复版脚本，使用替代命令获取系统信息</p>
+<p>修改后:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><code class="hljs batch">@echo off<br>setlocal enabledelayedexpansion<br>chcp 65001 &gt;nul<br>title Batch 脚本教学工具 - 兼容版<br><br>:: ===== 主菜单 =====<br>:MENU<br>cls<br>echo.<br>echo ================================<br>echo     Batch 脚本教学工具<br>echo ================================<br>echo [1] 显示系统信息<br>echo [2] 文件操作演示<br>echo [3] 网络测试<br>echo [4] 退出<br>echo ================================<br><br>set /p choice=请选择功能 (1-4): <br><br>if &quot;%choice%&quot;==&quot;1&quot; goto INFO<br>if &quot;%choice%&quot;==&quot;2&quot; goto FILES<br>if &quot;%choice%&quot;==&quot;3&quot; goto NETWORK<br>if &quot;%choice%&quot;==&quot;4&quot; exit<br><br>echo 输入无效，请重新选择<br>pause<br>goto MENU<br><br>:: ===== 系统信息 (不使用WMIC) =====<br>:INFO<br>cls<br>echo.<br>echo ===== 系统信息 =====<br>echo.<br><br>:: 使用systeminfo获取基本信息<br>echo 操作系统信息:<br>systeminfo | findstr /B /C:&quot;OS 名称&quot; /C:&quot;OS 版本&quot; /C:&quot;系统类型&quot;<br>echo.<br><br>echo 计算机名称: %COMPUTERNAME%<br>echo 用户名: %USERNAME%<br>echo.<br><br>:: 使用powershell获取磁盘信息<br>echo 磁盘空间信息:<br>echo.<br>for /f &quot;tokens=1,2,3&quot; %%a in (&#x27;powershell &quot;Get-CimInstance -ClassName Win32_LogicalDisk | Format-List DeviceID, Size, FreeSpace&quot; ^| findstr /v &quot;:&quot;&#x27;) do (<br>    set &quot;drive=%%a&quot;<br>    set &quot;size=%%b&quot;<br>    set &quot;free=%%c&quot;<br><br>    :: 转换为GB<br>    set /a size_gb=!size!/1073741824<br>    set /a free_gb=!free!/1073741824<br><br>    echo 驱动器 !drive! - 总空间: !size_gb! GB, 可用空间: !free_gb! GB<br>)<br>echo.<br><br>pause<br>goto MENU<br><br>:: ===== 文件操作演示 =====<br>:FILES<br>cls<br>echo.<br>echo ===== 文件操作演示 =====<br>echo.<br><br>:: 显示当前目录文件<br>echo 当前目录文件列表:<br>dir /B<br>echo.<br><br>:: 创建示例文件进行演示<br>echo 正在创建示例文件...<br>echo 这是示例文件1 &gt; sample1.txt<br>echo 这是示例文件2 &gt; sample2.txt<br>echo 这是示例文件3 &gt; sample3.txt<br><br>echo 创建完成！新文件列表:<br>dir /B *.txt<br>echo.<br><br>:: 批量重命名演示<br>set /a count=0<br>for %%f in (*.txt) do (<br>    set /a count+=1<br>    ren &quot;%%f&quot; &quot;renamed_file_!count!.txt&quot;<br>)<br><br>echo 重命名后文件列表:<br>dir /B *.txt<br>echo.<br><br>:: 清理示例文件<br>del *_file_*.txt<br>echo 已清理示例文件<br>pause<br>goto MENU<br><br>:: ===== 网络测试 =====<br>:NETWORK<br>cls<br>echo.<br>echo ===== 网络测试 =====<br>echo.<br><br>echo 网络适配器信息:<br>ipconfig | findstr IPv4<br>echo.<br><br>set /p host=请输入要测试的网址或IP(直接回车使用百度): <br>if &quot;%host%&quot;==&quot;&quot; set host=www.baidu.com<br><br>echo 正在ping测试...<br>ping -n 3 %host%<br><br>echo.<br>echo 网络测试完成<br>pause<br>goto MENU<br></code></pre></td></tr></table></figure>
+
+<p>这篇文章会继续更新下去</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>batch基础学习指南</div>
+      <div>http://example.com/2025/09/24/batch基础学习指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ziddzide</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/23/SSRF/" title="SSRF">
+                        <span class="hidden-mobile">SSRF</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

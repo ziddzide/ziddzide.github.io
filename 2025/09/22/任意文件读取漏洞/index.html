@@ -27,7 +27,7 @@
 <meta property="og:description" content="任意文件读取漏洞原理攻击者利用一些手段读取服务器上开发者不允许读到的文件，常作为资产信息搜集的重要手段，在每种可部署到web应用程序的程序语言中几乎都存在  任意文件读取漏洞常见触发点web语言PHP有关文件读取函数file_get_content(),file(),fopen()函数及其文件指针操作函数fread(),fgets()等 文件包含函数include(),require(),incl">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-22T15:31:11.000Z">
-<meta property="article:modified_time" content="2025-09-22T15:43:17.651Z">
+<meta property="article:modified_time" content="2025-09-26T16:21:37.183Z">
 <meta property="article:author" content="ziddzide">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          851 字
+          996 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          8 分钟
+          9 分钟
         
       </span>
     
@@ -315,6 +315,17 @@
 </li>
 </ul>
 <h4 id="MarkDown语法解析器-XSS"><a href="#MarkDown语法解析器-XSS" class="headerlink" title="MarkDown语法解析器 XSS"></a>MarkDown语法解析器 XSS</h4><p>有些网站允许你用Markdown语法写文章，但它的解析器不够安全，没能过滤掉危险的代码。<br>    <a href="javascript:alert('是的这是一个弹窗')">这是个链接</a></p>
+<p>探测</p>
+<h3 id="案例说明"><a href="#案例说明" class="headerlink" title="案例说明"></a>案例说明</h3><p>问题:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;/resources/images/rating1.png&quot;</span>&gt;</span> #说明内部资源是通过系统文件查询的<br></code></pre></td></tr></table></figure>
+
+<p>F12查看页面源代码</p>
+<p>解决方案:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">用brup suite截取获取这张图片的请求,更改报文中,filename=<span class="hljs-regexp">/resources/im</span>ages<span class="hljs-regexp">/rating1.png的请求,改编为filename=../</span>..<span class="hljs-regexp">/../</span>..<span class="hljs-regexp">/etc/</span>passwd<br></code></pre></td></tr></table></figure>
+
+<p>提升:</p>
+<p><strong>如果网站禁用了遍历序列,可以尝试用绝对地址&#x2F;etc&#x2F;passwd</strong></p>
+<h2 id="附言"><a href="#附言" class="headerlink" title="附言"></a>附言</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs groovy">..<span class="hljs-regexp">/ #表示返回上一级目录,而/</span><span class="hljs-keyword">var</span><span class="hljs-regexp">/www/</span>一般会是目录路径,所以使用多个../返回如果不保险可以使用多个<br></code></pre></td></tr></table></figure>
 
                 
               </div>

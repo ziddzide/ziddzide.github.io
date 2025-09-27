@@ -19,15 +19,15 @@
   <meta name="author" content="ziddzide">
   <meta name="keywords" content="">
   
-    <meta name="description" content="SSRF-服务端请求伪造原理解析URL结构解析1234567URL &#x3D; schema:&#x2F;&#x2F;[userinfo]@[host:port][path]?[query]#[fragment]# schema 资源所需要的协议# host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址# port 表示端口# path 路径# query 查询字符串,将用户输入传递给服务器,例如?id &#x3D; 1#">
+    <meta name="description" content="SSRF-服务端请求伪造原理解析服务器端请求伪造是一个Web安全漏洞,允许攻击者导致服务器端应用程序向意外位置发出请求。 在典型的SSRF攻击中,攻击者可能导致服务器连接到组织基础设施内的仅内部服务。在其他情况下,他们可能能够迫使服务器连接到任意外部系统。这可能会泄露敏感数据,例如授权凭据。 针对本地服务器的攻击在针对服务器的SSRF攻击中,攻击者通过其循环回流网络接口,导致应用程序向托管应用程序">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SSRF">
 <meta property="og:url" content="http://example.com/2025/09/23/SSRF/index.html">
 <meta property="og:site_name" content="ziddzide的技术博客">
-<meta property="og:description" content="SSRF-服务端请求伪造原理解析URL结构解析1234567URL &#x3D; schema:&#x2F;&#x2F;[userinfo]@[host:port][path]?[query]#[fragment]# schema 资源所需要的协议# host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址# port 表示端口# path 路径# query 查询字符串,将用户输入传递给服务器,例如?id &#x3D; 1#">
+<meta property="og:description" content="SSRF-服务端请求伪造原理解析服务器端请求伪造是一个Web安全漏洞,允许攻击者导致服务器端应用程序向意外位置发出请求。 在典型的SSRF攻击中,攻击者可能导致服务器连接到组织基础设施内的仅内部服务。在其他情况下,他们可能能够迫使服务器连接到任意外部系统。这可能会泄露敏感数据,例如授权凭据。 针对本地服务器的攻击在针对服务器的SSRF攻击中,攻击者通过其循环回流网络接口,导致应用程序向托管应用程序">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-23T09:07:34.000Z">
-<meta property="article:modified_time" content="2025-09-23T09:10:44.694Z">
+<meta property="article:modified_time" content="2025-09-27T10:41:27.215Z">
 <meta property="article:author" content="ziddzide">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          2.9k 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          10 分钟
+          24 分钟
         
       </span>
     
@@ -275,12 +275,133 @@
             
               <div class="markdown-body">
                 
-                <h1 id="SSRF-服务端请求伪造"><a href="#SSRF-服务端请求伪造" class="headerlink" title="SSRF-服务端请求伪造"></a>SSRF-服务端请求伪造</h1><h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><h3 id="URL结构解析"><a href="#URL结构解析" class="headerlink" title="URL结构解析"></a>URL结构解析</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">URL</span> = schema://[userinfo]@[host:port][path]?[query]<span class="hljs-comment">#[fragment]</span><br><span class="hljs-comment"># schema 资源所需要的协议</span><br><span class="hljs-comment"># host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址</span><br><span class="hljs-comment"># port 表示端口</span><br><span class="hljs-comment"># path 路径</span><br><span class="hljs-comment"># query 查询字符串,将用户输入传递给服务器,例如?id = 1</span><br><span class="hljs-comment"># fragment </span><br></code></pre></td></tr></table></figure>
+                <h1 id="SSRF-服务端请求伪造"><a href="#SSRF-服务端请求伪造" class="headerlink" title="SSRF-服务端请求伪造"></a>SSRF-服务端请求伪造</h1><h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><p>服务器端请求伪造是一个Web安全漏洞,允许攻击者导致服务器端应用程序向意外位置发出请求。</p>
+<p>在典型的SSRF攻击中,攻击者可能导致服务器连接到组织基础设施内的仅内部服务。在其他情况下,他们可能能够迫使服务器连接到任意外部系统。这可能会泄露敏感数据,例如授权凭据。</p>
+<h2 id="针对本地服务器的攻击"><a href="#针对本地服务器的攻击" class="headerlink" title="针对本地服务器的攻击"></a>针对本地服务器的攻击</h2><p>在针对服务器的SSRF攻击中,攻击者通过其循环回流网络接口,导致应用程序向托管应用程序的服务器发出HTTP请求。这通常涉及向URL提供像这样的主机名<code>127.0.0.1</code>(一个指向循环回转适配器的预留IP地址)或<code>localhost</code>(同一适配器常用的名称)。</p>
+<p>例如,设想一个购物应用程序,允许用户查看某商品是否在特定商店中有库存。要提供库存信息,应用程序必须查询各种后端REST API。通过前端 HTTP 请求将 URL 传递给相关的后端 API 端点来实现。当用户查看商品的库存状态时,其浏览器会提出以下请求:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">POST</span> /product/stock HTTP/<span class="hljs-number">1</span>.<span class="hljs-number">0</span> Content-Type: application/x-www-form-urlencoded Content-Length: <span class="hljs-number">118</span> stockApi=http://stock.weliketoshop.net:<span class="hljs-number">8080</span>/product/stock/check%<span class="hljs-number">3</span>FproductId%<span class="hljs-number">3</span>D6%<span class="hljs-number">26</span>storeId%<span class="hljs-number">3</span>D1<br></code></pre></td></tr></table></figure>
 
-<h2 id="检测漏洞存在"><a href="#检测漏洞存在" class="headerlink" title="检测漏洞存在"></a>检测漏洞存在</h2><p>尝试schema的协议类型</p>
+<p>这导致服务器向指定的网址发出请求,重新找回股票状态,并将其归还给用户。</p>
+<p>在此示例中,攻击者可以修改请求以指定服务器本地的 URL:</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nix">POST <span class="hljs-symbol">/product/stock</span> HTTP<span class="hljs-symbol">/1.0</span> <span class="hljs-params">Content-Type:</span> application<span class="hljs-symbol">/x-www-form-urlencoded</span> <span class="hljs-params">Content-Length:</span> <span class="hljs-number">118</span> stockApi<span class="hljs-operator">=</span>http:<span class="hljs-operator">//</span>localhost<span class="hljs-operator">/</span>admin<br></code></pre></td></tr></table></figure>
+
+<p>服务器获取内容<code>/admin</code>URL 并将其返回给用户。</p>
+<p>攻击者可以访问<code>/admin</code>URL,但管理功能通常仅对经过身份验证的用户开放。这意味着攻击者不会看到任何相关内容。但是,如果请求<code>/admin</code>URL 来自本地机器,常规访问控制被绕过。该应用程序授予对管理功能的完全访问权限,因为该请求似乎来自一个可信的位置。</p>
+<h3 id="核心攻击流程​"><a href="#核心攻击流程​" class="headerlink" title="核心攻击流程​"></a>核心攻击流程​</h3><p>​漏洞入口​</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">购物应用存在SSRF漏洞：前端允许用户通过stockApi参数指定后端API地址（http://stock.weliketoshop.net:8080/...），服务器会无条件访问该地址并返回内容。<br></code></pre></td></tr></table></figure>
+
+<p>​攻击者篡改请求​</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">攻击者将stockApi参数值改为服务器本地的管理接口：<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http">stockApi=http://localhost/admin<br>localhost或 127.0.0.1指向服务器的回环接口（Loopback Adapter）​，即服务器自身。<br></code></pre></td></tr></table></figure>
+
+<p>​服务器执行恶意请求​</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">服务器收到请求后，向自己的http<span class="hljs-punctuation">:</span><span class="hljs-comment">//localhost/admin发送请求，获取管理页面的内容（如HTML源码）。</span><br></code></pre></td></tr></table></figure>
+
+<p>​绕过访问控制​</p>
+<p>管理页面&#x2F;admin原本需要身份验证，但服务器设计时认为：</p>
+<p>​​“来自本地的请求一定是可信的”​​</p>
+<p>因此直接返回了敏感内容，攻击者无需登录即可获取管理功能。</p>
+<h3 id="应用程序信任本地请求核心原因"><a href="#应用程序信任本地请求核心原因" class="headerlink" title="应用程序信任本地请求核心原因"></a>应用程序信任本地请求核心原因</h3><h4 id="访问控制分层失效（前置组件绕过）"><a href="#访问控制分层失效（前置组件绕过）" class="headerlink" title="访问控制分层失效（前置组件绕过）"></a>访问控制分层失效（前置组件绕过）</h4><ul>
+<li><p>​<strong>典型架构</strong>​：<br>外部请求 → 防火墙&#x2F;WAF → 反向代理（如Nginx） → 应用服务器<br>​<strong>访问控制</strong>可能仅部署在反向代理层（例如Nginx配置<code>allow 127.0.0.1; deny all</code>）。</p>
+</li>
+<li><p>​<strong>漏洞根源</strong>​：<br>当应用服务器通过SSRF访问<code>localhost/admin</code>时，请求<strong>绕过反向代理</strong>，直接来自内部网络（源IP&#x3D;127.0.0.1）。<br>→ 反向代理的ACL规则失效，应用服务器未做二次验证。</p>
+</li>
+</ul>
+<h4 id="灾难恢复后门（运维便利性陷阱"><a href="#灾难恢复后门（运维便利性陷阱" class="headerlink" title="灾难恢复后门（运维便利性陷阱)"></a>灾难恢复后门（运维便利性陷阱)</h4><ul>
+<li><p>​<strong>设计初衷</strong>​：<br>管理员忘记密码时，可通过服务器本地执行命令紧急恢复系统（例如<code>curl http://localhost/resetAdminPassword</code>）。</p>
+</li>
+<li><p>​<strong>致命假设</strong>​：<br>“能物理登录服务器的人一定是可信管理员”。<br>→ 忽略<strong>网络层面</strong>的本地请求可能被伪造（SSRF）。</p>
+</li>
+</ul>
+<h4 id="端口隔离​"><a href="#端口隔离​" class="headerlink" title="端口隔离​"></a>端口隔离​</h4><ul>
+<li><p>​<strong>常见配置</strong>​：</p>
+<ul>
+<li><p>用户访问端口：<code>公网IP:80</code>（对外开放）</p>
+</li>
+<li><p>管理接口端口：<code>127.0.0.1:8080</code>（仅本地可访问）</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="URL结构解析"><a href="#URL结构解析" class="headerlink" title="URL结构解析"></a>URL结构解析</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">URL</span> = schema://[userinfo]@[host:port][path]?[query]<span class="hljs-comment">#[fragment]</span><br><span class="hljs-comment"># schema 资源所需要的协议</span><br><span class="hljs-comment"># host 表示服务器,可以是域名,也可以是ipv4或者ipv6地址</span><br><span class="hljs-comment"># port 表示端口</span><br><span class="hljs-comment"># path 路径</span><br><span class="hljs-comment"># query 查询字符串,将用户输入传递给服务器,例如?id = 1</span><br><span class="hljs-comment"># fragment </span><br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>原始字符</th>
+<th>编码后</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>:</code></td>
+<td><code>%3A</code></td>
+<td>冒号</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td><code>%2F</code></td>
+<td>斜杠</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td><code>%2F</code></td>
+<td>斜杠</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td><code>%2F</code></td>
+<td>斜杠</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td><code>%3F</code></td>
+<td>问号</td>
+</tr>
+<tr>
+<td><code>=</code></td>
+<td><code>%3D</code></td>
+<td>等号</td>
+</tr>
+</tbody></table>
+<h3 id="案例说明"><a href="#案例说明" class="headerlink" title="案例说明"></a>案例说明</h3><p><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/learning-paths/server-side-vulnerabilities-apprentice/ssrf-apprentice/ssrf/lab-basic-ssrf-against-localhost#">靶场连接</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_74412122/article/details/140991404?ops_request_misc=elastic_search_misc&request_id=89ca0823f729217e76d622d85489d1d5&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~ElasticSearch~search_v2-1-140991404-null-null.142^v102^pc_search_result_base3&utm_term=%E5%AE%9E%E9%AA%8C%E5%AE%A4%3A%E9%92%88%E5%AF%B9%E6%9C%AC%E5%9C%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%9F%BA%E7%A1%80SSRF&spm=1018.2226.3001.4187">  csdn靶场解析</a></p>
+<h4 id="过程说明"><a href="#过程说明" class="headerlink" title="过程说明"></a>过程说明</h4><ul>
+<li><p>首先观察具体商品页面存在查看库存的功能</p>
+</li>
+<li><p>抓包更改api接口为127.0.0.1&#x2F;admin,出现部分管理员页面,点击删除卡洛斯</p>
+</li>
+<li><p>抓包后发现url逻辑是<code>/damin/delete?username=carlos</code></p>
+</li>
+<li><p>再次对库存查找的功能抓包,修改api接口为以上的url</p>
+</li>
+</ul>
+<h2 id="针对其他后端系统的攻击"><a href="#针对其他后端系统的攻击" class="headerlink" title="针对其他后端系统的攻击"></a>针对其他后端系统的攻击</h2><p>针对其他后端系统的SSRF攻击</p>
+<p>在某些情况下,应用程序服务器能够与无法直接访问的后端系统进行交互。这些系统通常具有不可路由的私有IP地址。后端系统通常受到网络拓扑保护,因此其安全态势通常较弱。在许多情况下,内部后端系统包含一些敏感功能,任何能够与系统交互的人均可在无需身份验证的情况下访问。</p>
+<p>在前面的示例中,假设后端URL处存在一个管理接口 <code>https://192.168.0.68/admin</code>。攻击者可以提交以下请求以利用SSRF漏洞,并访问管理界面</p>
+<h3 id="检测服务器端口开放程度"><a href="#检测服务器端口开放程度" class="headerlink" title="检测服务器端口开放程度"></a>检测服务器端口开放程度</h3><h4 id="简单脚本探测端口及ip"><a href="#简单脚本探测端口及ip" class="headerlink" title="简单脚本探测端口及ip"></a>简单脚本探测端口及ip</h4><p>通过编写简单的脚本逐一试探服务器端口是否开放,通过返回true或者false来判断</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> requests<br><br><span class="hljs-comment"># 扫描192.168.1.0/24网段示例</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">255</span>):<br>    <span class="hljs-keyword">try</span>:<br>        url = <span class="hljs-string">f&quot;http://vulnerable-site.com/ssrf.php?url=http://192.168.1.<span class="hljs-subst">&#123;i&#125;</span>&quot;</span><br>        response = requests.get(url, timeout=<span class="hljs-number">2</span>)<br>        <span class="hljs-keyword">if</span> response.status_code == <span class="hljs-number">200</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;发现存活主机: 192.168.1.<span class="hljs-subst">&#123;i&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">except</span>:<br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="检测漏洞存在"><a href="#检测漏洞存在" class="headerlink" title="检测漏洞存在"></a>检测漏洞存在</h4><p>尝试schema的协议类型</p>
 <figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">file:</span>// <span class="hljs-meta"># 从文件系统中获取文件</span><br><span class="hljs-symbol">dirt:</span>// <span class="hljs-meta"># 字典服务器协议</span><br><span class="hljs-symbol">gopher:</span>// <span class="hljs-meta"># 分布式文档传递</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="攻击方式"><a href="#攻击方式" class="headerlink" title="攻击方式"></a>攻击方式</h2><h3 id="服务器资源探测"><a href="#服务器资源探测" class="headerlink" title="服务器资源探测"></a>服务器资源探测</h3><h4 id="检测服务器端口开放程度"><a href="#检测服务器端口开放程度" class="headerlink" title="检测服务器端口开放程度"></a>检测服务器端口开放程度</h4><p>通过编写简单的脚本逐一试探服务器端口是否开放,通过返回true或者false来判断</p>
+<p>例如:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">http:<span class="hljs-regexp">//</span>vulnerable-site.com<span class="hljs-regexp">/ssrf.php?url=file:/</span><span class="hljs-regexp">//</span>etc/hosts<br>http:<span class="hljs-regexp">//</span>vulnerable-site.com<span class="hljs-regexp">/ssrf.php?url=file:/</span><span class="hljs-regexp">//</span>proc<span class="hljs-regexp">/net/</span>route<br>http:<span class="hljs-regexp">//</span>vulnerable-site.com<span class="hljs-regexp">/ssrf.php?url=file:/</span><span class="hljs-regexp">//</span>proc<span class="hljs-regexp">/net/</span>arp<br></code></pre></td></tr></table></figure>
+
+<p>利用服务器自身泄露的信息​<br>这是更高效的方法——让服务器告诉你它所在的内网环境​<br>：</p>
+<p>​读取网络配置文件​：</p>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">看上文的<span class="hljs-built_in">schema</span><br></code></pre></td></tr></table></figure>
+
+<p>​查看网络接口信息​：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http">http://vulnerable-site.com/ssrf.php?url=file:///proc/net/dev<br></code></pre></td></tr></table></figure>
+
+<p>​3. 云环境特殊探测​<br>如果目标运行在云服务器上，攻击者会尝试访问云元数据接口​</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs http">http://vulnerable-site.com/ssrf.php?url=http://169.254.169.254/<br>http://vulnerable-site.com/ssrf.php?url=http://169.254.169.254/latest/meta-data/<br>这个特殊地址（169.254.169.254）是云平台的标准元数据服务地址，可能泄露大量敏感信息包括内网IP。<br></code></pre></td></tr></table></figure>
+
+<p>​4. 基于响应差异的探测​<br>即使没有直接回显（盲SSRF），攻击者仍能通过以下方式推断</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><br>​响应时间差异​：连接存活主机的响应通常比连接不存在<span class="hljs-built_in">IP</span>更快<br><br>​错误信息差异​：不同服务会返回不同的错误消息<br><br>​DNS查询​：诱导服务器向攻击者控制的DNS服务器发起查询<br></code></pre></td></tr></table></figure>
+
 <h3 id="使用gopher协议"><a href="#使用gopher协议" class="headerlink" title="使用gopher协议"></a>使用gopher协议</h3><h4 id="攻击redis"><a href="#攻击redis" class="headerlink" title="攻击redis"></a>攻击redis</h4><p>redis一般运行在内网,大多绑定在<strong>127.0.0.1:6379</strong>,一般空口令</p>
 <h5 id="1-未授权访问与弱口令"><a href="#1-未授权访问与弱口令" class="headerlink" title="1. 未授权访问与弱口令"></a>1. 未授权访问与弱口令</h5><p>Redis 默认安装后<strong>没有密码认证</strong>​（<code>requirepass</code>参数为空），或者管理员设置了<strong>弱口令</strong>，导致攻击者可以直接连接</p>
 <p>。</p>

